@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`palette snapshot 1`] = `
+{
+  "dark": {
+    "accent": "#2563EB",
+    "bg": "#0A0A0A",
+    "bgElevated": "#111827",
+    "danger": "#EF4444",
+    "divider": "rgba(255,255,255,0.08)",
+    "glassBg": "rgba(255,255,255,0.08)",
+    "glassBorder": "rgba(255,255,255,0.12)",
+    "success": "#22C55E",
+    "surface": "#111827",
+    "text": "#FAFAFA",
+    "textMuted": "#6B7280",
+  },
+  "light": {
+    "accent": "#2563EB",
+    "bg": "#FAFAFA",
+    "bgElevated": "#F5F5F7",
+    "danger": "#EF4444",
+    "divider": "rgba(10,10,10,0.06)",
+    "glassBg": "rgba(10,10,10,0.06)",
+    "glassBorder": "rgba(10,10,10,0.10)",
+    "success": "#22C55E",
+    "surface": "#FFFFFF",
+    "text": "#0A0A0A",
+    "textMuted": "#6B7280",
+  },
+  "palette": {
+    "black": "#0A0A0A",
+    "blue": "#2563EB",
+    "blueAlt": "#3B82F6",
+    "gray100": "#F5F5F7",
+    "gray400": "#6B7280",
+    "gray700": "#1F2937",
+    "gray900": "#111827",
+    "green": "#22C55E",
+    "red": "#EF4444",
+    "white": "#FAFAFA",
+  },
+}
+`;
