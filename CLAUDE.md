@@ -63,6 +63,14 @@ Payments via RevenueCat. Handle: upgrade, downgrade, cancel, restore, grace peri
 
 **Admin (separate Web SPA — React + Vite):** Users list filtered by tier, dashboard (MRR, new subs, churn), content management (exercises/workouts/blog), manual subscription override, push to user segments.
 
+## Auth (Iter 1)
+
+Supabase Auth — email/password + phone OTP. Apple/Google Sign-In deferred until dev build.  
+Session persisted in AsyncStorage. `useAuthStore.hydrate()` runs once at app start, subscribes to `onAuthStateChange`.  
+API functions in `src/features/auth/api/*` are the single entrypoint to `supabase.auth.*` calls.  
+`database.types.ts` — generated from `profiles` schema (run `mcp__supabase__generate_typescript_types` to refresh).  
+Migration: `supabase/migrations/20260505000000_profiles.sql` — apply via Supabase MCP or Dashboard.
+
 ## Architecture Rules
 
 - TypeScript strict mode — no `any`, use `unknown` + type guards

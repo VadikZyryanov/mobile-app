@@ -4,6 +4,7 @@ export const StorageKeys = {
   authToken: 'auth.token',
   authUserId: 'auth.userId',
   themeOverride: 'settings.themeOverride',
+  onboardingCompleted: 'onboarding.completed',
 } as const;
 
 export type StorageKey = (typeof StorageKeys)[keyof typeof StorageKeys];
