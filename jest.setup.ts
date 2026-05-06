@@ -12,3 +12,22 @@ jest.mock('react-native-reanimated', () => {
   Reanimated.default.call = () => undefined;
   return Reanimated;
 });
+
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: jest.fn(),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      })),
+      signInWithPassword: jest.fn(),
+      signUp: jest.fn(),
+      signInWithOtp: jest.fn(),
+      verifyOtp: jest.fn(),
+      resetPasswordForEmail: jest.fn(),
+      updateUser: jest.fn(),
+      signOut: jest.fn(),
+    },
+    from: jest.fn(),
+  },
+}));
