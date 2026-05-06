@@ -133,19 +133,41 @@ create policy "exercises_write" on public.exercises          for all    using (p
 create policy "workouts_read"   on public.workouts           for select using (auth.role() = 'authenticated');
 create policy "workouts_write"  on public.workouts           for all    using (public.is_admin()) with check (public.is_admin());
 
-create policy "we_read"         on public.workout_exercises  for select using (auth.role() = 'authenticated');
+create policy "we_read"         on public.workout_exercises  for select
+  using (
+    auth.role() = 'authenticated'
+    and exists (select 1 from public.workouts w where w.id = workout_id)
+  );
 create policy "we_write"        on public.workout_exercises  for all    using (public.is_admin()) with check (public.is_admin());
 
 create policy "programs_read"   on public.programs           for select using (auth.role() = 'authenticated');
 create policy "programs_write"  on public.programs           for all    using (public.is_admin()) with check (public.is_admin());
 
-create policy "pw_read"         on public.program_workouts   for select using (auth.role() = 'authenticated');
+create policy "pw_read"         on public.program_workouts   for select
+  using (
+    auth.role() = 'authenticated'
+    and exists (select 1 from public.programs p where p.id = program_id)
+  );
 create policy "pw_write"        on public.program_workouts   for all    using (public.is_admin()) with check (public.is_admin());
 
 create policy "blog_read" on public.blog_posts for select
   using ((auth.role() = 'authenticated' and published_at is not null) or public.is_admin());
 create policy "blog_write" on public.blog_posts for all
   using (public.is_admin()) with check (public.is_admin());
+
+-- Harden profiles update: prevent self-elevation of is_admin or subscription_tier
+drop policy if exists "profiles_update_own" on public.profiles;
+
+create policy "profiles_update_own" on public.profiles
+  for update
+  using (auth.uid() = id)
+  with check (
+    auth.uid() = id
+    and not is_admin
+    and subscription_tier = (
+      select subscription_tier from public.profiles where id = auth.uid()
+    )
+  );
 
 -- RPC: signed URL для приватного видео ---------------------
 create or replace function public.get_exercise_video_url(exercise_slug text)
@@ -154,14 +176,13 @@ declare
   ex record; user_tier subscription_tier_enum; signed text;
 begin
   select * into ex from public.exercises where slug = exercise_slug;
-  if ex is null then raise exception 'exercise not found'; end if;
+  if NOT FOUND then raise exception 'exercise not found'; end if;
   if ex.video_path is null then return null; end if;
 
   select subscription_tier into user_tier from public.profiles where id = auth.uid();
   if user_tier is null then raise exception 'profile not found'; end if;
 
-  if array_position(array['free','basic','pro','pro_max']::text[], user_tier::text)
-   < array_position(array['free','basic','pro','pro_max']::text[], ex.min_tier::text) then
+  if user_tier < ex.min_tier then
     raise exception 'subscription required';
   end if;
 
