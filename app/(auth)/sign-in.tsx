@@ -1,24 +1,45 @@
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { Button, Input, Screen, Text } from '@/components/ui';
+import { Button, Input, Screen, Segmented, Text } from '@/components/ui';
 import { signInWithEmail } from '@/features/auth/api/signInWithEmail';
+import { signInWithPhone } from '@/features/auth/api/signInWithPhone';
 import { useTheme } from '@/theme';
+
+const MODES = [
+  { value: 'email', label: 'Email' },
+  { value: 'phone', label: 'Телефон' },
+] as const;
+type Mode = (typeof MODES)[number]['value'];
 
 export default function SignInScreen() {
   const theme = useTheme();
+  const [mode, setMode] = useState<Mode>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submit = async () => {
+  const submitEmail = async () => {
     setLoading(true);
     setError(null);
     const res = await signInWithEmail(email, password);
     setLoading(false);
     if (!res.ok) setError(res.error);
+  };
+
+  const submitPhone = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await signInWithPhone(phone);
+    setLoading(false);
+    if (res.ok) {
+      router.push({ pathname: '/(auth)/verify-otp', params: { phone } } as unknown as Href);
+    } else {
+      setError(res.error);
+    }
   };
 
   return (
@@ -28,31 +49,74 @@ export default function SignInScreen() {
           <Text variant="hero" weight="bold">
             Вход
           </Text>
+          <Text variant="body" color="textMuted">
+            Войди по email или номеру телефона.
+          </Text>
         </View>
 
-        <Input
-          label="Email"
-          placeholder="you@example.com"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        <Input
-          label="Пароль"
-          placeholder="••••••••"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
+        <Segmented
+          value={mode}
+          options={MODES}
+          onChange={(v) => {
+            setMode(v);
+            setError(null);
+          }}
         />
 
-        {error ? (
-          <Text variant="body" color="danger">
-            {error}
-          </Text>
-        ) : null}
+        {mode === 'email' ? (
+          <>
+            <Input
+              label="Email"
+              placeholder="you@example.com"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <Input
+              label="Пароль"
+              placeholder="••••••••"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            {error ? (
+              <Text variant="body" color="danger">
+                {error}
+              </Text>
+            ) : null}
+            <Button label="Войти" fullWidth loading={loading} onPress={() => void submitEmail()} />
+            <Button
+              label="Забыли пароль?"
+              variant="ghost"
+              fullWidth
+              onPress={() => router.push('/(auth)/forgot-password' as Href)}
+            />
+          </>
+        ) : (
+          <>
+            <Input
+              label="Номер телефона"
+              placeholder="+79991234567"
+              value={phone}
+              onChangeText={setPhone}
+              autoCapitalize="none"
+              keyboardType="phone-pad"
+            />
+            {error ? (
+              <Text variant="body" color="danger">
+                {error}
+              </Text>
+            ) : null}
+            <Button
+              label="Получить код"
+              fullWidth
+              loading={loading}
+              onPress={() => void submitPhone()}
+            />
+          </>
+        )}
 
-        <Button label="Войти" fullWidth loading={loading} onPress={() => void submit()} />
         <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>

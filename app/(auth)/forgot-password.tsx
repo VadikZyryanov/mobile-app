@@ -3,34 +3,57 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { Button, Input, Screen, Text } from '@/components/ui';
-import { signUpWithEmail } from '@/features/auth/api/signUpWithEmail';
+import { resetPassword } from '@/features/auth/api/resetPassword';
 import { useTheme } from '@/theme';
 
-export default function SignUpScreen() {
+export default function ForgotPasswordScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
   const submit = async () => {
     setLoading(true);
     setError(null);
-    const res = await signUpWithEmail(email, password, name || undefined);
+    const res = await resetPassword(email);
     setLoading(false);
-    if (!res.ok) setError(res.error);
+    if (res.ok) setSent(true);
+    else setError(res.error);
   };
+
+  if (sent) {
+    return (
+      <Screen>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            gap: theme.spacing.lg,
+            padding: theme.spacing.lg,
+          }}
+        >
+          <Text variant="hero" weight="bold" align="center">
+            Письмо отправлено
+          </Text>
+          <Text variant="bodyLg" color="textMuted" align="center">
+            Проверь {email}. Открой письмо и нажми на ссылку — приложение само откроется.
+          </Text>
+          <Button label="Готово" fullWidth onPress={() => router.back()} />
+        </View>
+      </Screen>
+    );
+  }
 
   return (
     <Screen scroll>
       <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
         <View style={{ gap: theme.spacing.sm }}>
           <Text variant="hero" weight="bold">
-            Регистрация
+            Сброс пароля
           </Text>
           <Text variant="body" color="textMuted">
-            Создай аккаунт через email.
+            Пришлём ссылку для смены пароля.
           </Text>
         </View>
 
@@ -42,19 +65,6 @@ export default function SignUpScreen() {
           autoCapitalize="none"
           keyboardType="email-address"
         />
-        <Input
-          label="Пароль"
-          placeholder="не менее 8 символов"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Input
-          label="Имя (необязательно)"
-          placeholder="Как тебя называть?"
-          value={name}
-          onChangeText={setName}
-        />
 
         {error ? (
           <Text variant="body" color="danger">
@@ -62,7 +72,12 @@ export default function SignUpScreen() {
           </Text>
         ) : null}
 
-        <Button label="Создать аккаунт" fullWidth loading={loading} onPress={() => void submit()} />
+        <Button
+          label="Отправить ссылку"
+          fullWidth
+          loading={loading}
+          onPress={() => void submit()}
+        />
         <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
