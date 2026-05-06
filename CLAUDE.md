@@ -103,6 +103,7 @@ npm build          # ESBuild production
 
 ## Additional Context
 
+@docs/progress.md # Текущий статус итераций и что уже реализовано
 @docs/architecture.md # DB schema and API architecture details
 @docs/api-standards.md # REST conventions, error formats, auth headers
 @docs/design-system.md # Component usage rules, glassmorphism specs
