@@ -29,5 +29,9 @@ jest.mock('@/lib/supabase', () => ({
       signOut: jest.fn(),
     },
     from: jest.fn(),
+    rpc: jest.fn(),
+    storage: {
+      from: jest.fn(),
+    },
   },
 }));
