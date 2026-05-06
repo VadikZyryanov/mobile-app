@@ -3,7 +3,7 @@
 | #   | Итерация              | Статус     | Дата завершения |
 | --- | --------------------- | ---------- | --------------- |
 | 0   | Фундамент             | ✅ Done    | 2026-05-05      |
-| 1   | Auth + Supabase       | ⬜ Planned |                 |
+| 1   | Auth + Supabase       | ✅ Done    | 2026-05-06      |
 | 2   | Backend MVP + контент | ⬜ Planned |                 |
 | 3   | Подписки (RevenueCat) | ⬜ Planned |                 |
 | 4   | Push + офлайн         | ⬜ Planned |                 |
@@ -12,9 +12,24 @@
 
 ## Текущая итерация
 
-**Итерация 1** — Auth + Supabase  
-Спека: `docs/superpowers/specs/2026-05-05-iteration-1-auth-design.md`  
-План: `docs/superpowers/plans/2026-05-05-iteration-1-auth.md`
+**Итерация 2** — Backend MVP + контент  
+_(не начата)_
+
+## Что реализовано (Итерация 1)
+
+- Supabase Auth: email/password + phone OTP
+- `public.profiles` таблица с RLS и триггером `handle_new_user`
+- `useAuthStore` — реальный Supabase, `hydrate()` + `onAuthStateChange`
+- `useProfile` / `useUpdateProfile` (React Query)
+- API-слой: `signInWithEmail`, `signUpWithEmail`, `signInWithPhone`, `verifyPhoneOtp`, `resetPassword`, `updatePassword`, `signOut`
+- `mapAuthError` — маппинг Supabase error codes → русские сообщения
+- `Segmented` UI-компонент (Email/Phone переключатель)
+- Экраны: welcome (3-слайд онбординг), onboarding, sign-in, sign-up, verify-otp, forgot-password, reset-password, profile tab
+- `app.config.ts` с env-переменными (Supabase URL + anon key)
+- Jest + RNTL: 62 теста, все зелёные
+- Миграция применена, `database.types.ts` сгенерирован из живой схемы
+- Спека: `docs/superpowers/specs/2026-05-05-iteration-1-auth-design.md`
+- План: `docs/superpowers/plans/2026-05-05-iteration-1-auth.md`
 
 ## Что реализовано (Итерация 0)
 
