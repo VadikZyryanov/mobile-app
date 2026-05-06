@@ -47,13 +47,14 @@ Weights: `regular(400), medium(500), semibold(600), bold(700)`
 
 ## Components
 
-| Component | Notes                                                                                           |
-| --------- | ----------------------------------------------------------------------------------------------- |
-| `Text`    | Always use this instead of RN `Text`. Props: `variant`, `weight`, `color`, `align`.             |
-| `Screen`  | SafeArea wrapper. Props: `scroll`, `padded`, `edges`.                                           |
-| `Card`    | Variants: `base`, `glass`. Glass uses `BlurView` + `glassBg`.                                   |
-| `Input`   | Floating label, focused state highlights with accent border. Supports `label`, `error`, `hint`. |
-| `Button`  | Variants: `primary`, `secondary`, `ghost`. Sizes: `sm`, `md`, `lg`. Press-scale via Reanimated. |
+| Component   | Notes                                                                                              |
+| ----------- | -------------------------------------------------------------------------------------------------- |
+| `Text`      | Always use this instead of RN `Text`. Props: `variant`, `weight`, `color`, `align`.                |
+| `Screen`    | SafeArea wrapper. Props: `scroll`, `padded`, `edges`.                                              |
+| `Card`      | Variants: `base`, `glass`. Glass uses `BlurView` + `glassBg`.                                      |
+| `Input`     | Floating label, focused state highlights with accent border. Supports `label`, `error`, `hint`.    |
+| `Button`    | Variants: `primary`, `secondary`, `ghost`. Sizes: `sm`, `md`, `lg`. Press-scale via Reanimated.    |
+| `Segmented` | Tab-style selector. Props: `value`, `options`, `onChange`. Used for Email/Phone toggle in sign-in. |
 
 ## Usage
 
