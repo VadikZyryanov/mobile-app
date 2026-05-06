@@ -3,14 +3,23 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { Button, Input, Screen, Text } from '@/components/ui';
-import { useAuthStore } from '@/store/auth.store';
+import { signInWithEmail } from '@/features/auth/api/signInWithEmail';
 import { useTheme } from '@/theme';
 
 export default function SignInScreen() {
   const theme = useTheme();
-  const signIn = useAuthStore((state) => state.signIn);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const submit = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await signInWithEmail(email, password);
+    setLoading(false);
+    if (!res.ok) setError(res.error);
+  };
 
   return (
     <Screen scroll>
@@ -18,9 +27,6 @@ export default function SignInScreen() {
         <View style={{ gap: theme.spacing.sm }}>
           <Text variant="hero" weight="bold">
             Вход
-          </Text>
-          <Text variant="body" color="textMuted">
-            Заглушка экрана. Реальный Supabase Auth — Итерация 1.
           </Text>
         </View>
 
@@ -40,14 +46,13 @@ export default function SignInScreen() {
           secureTextEntry
         />
 
-        <Button
-          label="Войти"
-          fullWidth
-          onPress={() => {
-            signIn('demo-user');
-            router.replace('/(tabs)/home');
-          }}
-        />
+        {error ? (
+          <Text variant="body" color="danger">
+            {error}
+          </Text>
+        ) : null}
+
+        <Button label="Войти" fullWidth loading={loading} onPress={() => void submit()} />
         <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
