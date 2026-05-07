@@ -8,3 +8,5 @@ export { ProgramCard } from './ProgramCard';
 export type { ProgramCardData } from './ProgramCard';
 export { BlogPostCard } from './BlogPostCard';
 export type { BlogPostCardData } from './BlogPostCard';
+export { ExerciseRow } from './ExerciseRow';
+export type { ExerciseRowData } from './ExerciseRow';
