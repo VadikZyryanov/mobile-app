@@ -12,7 +12,7 @@ jest.mock('expo-router', () => ({
 
 jest.mock('expo-video', () => ({
   VideoView: () => null,
-  useVideoPlayer: () => ({}),
+  useVideoPlayer: () => ({ play: jest.fn() }),
 }));
 
 const fromMock = supabase.from as jest.Mock;
@@ -75,7 +75,7 @@ describe('ExerciseScreen', () => {
     setupExercise('basic', 'pro');
     const { Wrapper } = makeQueryWrapper();
     const { findByText } = render(<ExerciseScreen />, { wrapper: Wrapper });
-    await waitFor(() => expect(findByText('Squat')).toBeTruthy());
+    await findByText('Squat');
   });
 
   it('показывает paywall если tier недостаточен', async () => {

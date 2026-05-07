@@ -135,7 +135,7 @@ function Chip({ text, muted }: { text: string; muted?: boolean }) {
     <View
       style={{
         paddingHorizontal: theme.spacing.sm,
-        paddingVertical: 4,
+        paddingVertical: theme.spacing.xs,
         borderRadius: theme.radii.full,
         backgroundColor: muted ? theme.colors.bgElevated : theme.colors.accent,
       }}
