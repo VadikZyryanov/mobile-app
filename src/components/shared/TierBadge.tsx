@@ -26,7 +26,12 @@ export function TierBadge({ tier }: { tier: Tier }) {
         alignSelf: 'flex-start',
       }}
     >
-      <Text variant="caption" weight="bold" style={isPaid ? { color: '#fff' } : undefined}>
+      <Text
+        variant="caption"
+        weight="bold"
+        color={isPaid ? undefined : 'textMuted'}
+        style={isPaid ? { color: theme.palette.white } : undefined}
+      >
         {LABELS[tier]}
       </Text>
     </View>
