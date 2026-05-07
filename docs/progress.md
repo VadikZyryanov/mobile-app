@@ -4,7 +4,7 @@
 | --- | --------------------- | ---------- | --------------- |
 | 0   | Фундамент             | ✅ Done    | 2026-05-05      |
 | 1   | Auth + Supabase       | ✅ Done    | 2026-05-06      |
-| 2   | Backend MVP + контент | ⬜ Planned |                 |
+| 2   | Backend MVP + контент | ✅ Done    | 2026-05-07      |
 | 3   | Подписки (RevenueCat) | ⬜ Planned |                 |
 | 4   | Push + офлайн         | ⬜ Planned |                 |
 | 5   | Pro Max: питание      | ⬜ Planned |                 |
@@ -12,8 +12,22 @@
 
 ## Текущая итерация
 
-**Итерация 2** — Backend MVP + контент  
+**Итерация 3** — Подписки (RevenueCat)  
 _(не начата)_
+
+## Что реализовано (Итерация 2)
+
+- БД: 2 миграции (content + search), 6 таблиц, RLS, RPC `get_exercise_video_url` / `get_exercise_gif_url` / `search_content`
+- Storage: 1 private (`exercise-media`) + 3 public buckets с admin-only write
+- Seed: 10 упражнений, 5 тренировок, 2 программы, 3 поста
+- Фичи: `features/exercises`, `features/workouts`, `features/programs`, `features/blog`, `features/search` — api, hooks, types
+- Shared компоненты: TierBadge, DifficultyDots, PaywallCard, WorkoutCard, ProgramCard, BlogPostCard, ExerciseRow, QueryView
+- Экраны: Home (дашборд), Workouts list/detail, Programs list/detail, Exercises detail (с tier-gated video), Blog list/detail, Search
+- Tab bar: 6 вкладок (Home, Workouts, Programs, Search, Blog, Profile)
+- Tier gate: серверная проверка в RPC + клиентская через `hasAccess`
+- Тесты: 144 (62 из Iter 1 + 82 новых), все зелёные
+- Спека: `docs/superpowers/specs/2026-05-06-iteration-2-content-design.md`
+- План: `docs/superpowers/plans/2026-05-06-iteration-2-content.md`
 
 ## Что реализовано (Итерация 1)
 
