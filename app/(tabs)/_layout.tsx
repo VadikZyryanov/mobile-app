@@ -36,8 +36,12 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="home" options={{ title: 'Главная' }} />
       <Tabs.Screen name="workouts" options={{ title: 'Тренировки' }} />
+      <Tabs.Screen name="programs" options={{ title: 'Программы' }} />
+      <Tabs.Screen name="search" options={{ title: 'Поиск' }} />
       <Tabs.Screen name="blog" options={{ title: 'Блог' }} />
       <Tabs.Screen name="profile" options={{ title: 'Профиль' }} />
+      {/* exercises — nested stack without tab button */}
+      <Tabs.Screen name="exercises" options={{ href: null }} />
     </Tabs>
   );
 }
