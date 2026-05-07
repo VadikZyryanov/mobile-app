@@ -74,7 +74,7 @@ export default function WorkoutsList() {
             gap: theme.spacing.md,
           }}
           refreshControl={
-            <RefreshControl refreshing={q.isFetching} onRefresh={() => void q.refetch()} />
+            <RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />
           }
         />
       </QueryView>
