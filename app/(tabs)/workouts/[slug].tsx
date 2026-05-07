@@ -8,6 +8,8 @@ import { useWorkoutDetail } from '@/features/workouts/hooks';
 import { getPublicUrl } from '@/services/storage';
 import { useTheme } from '@/theme';
 
+const BACK_BUTTON_TOP = 56;
+
 export default function WorkoutDetail() {
   const theme = useTheme();
   const router = useRouter();
@@ -26,7 +28,7 @@ export default function WorkoutDetail() {
             accessibilityLabel="Назад"
             style={{
               position: 'absolute',
-              top: 56,
+              top: BACK_BUTTON_TOP,
               left: theme.spacing.lg,
               width: 40,
               height: 40,
