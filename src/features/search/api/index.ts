@@ -1,0 +1,1 @@
+export { searchContent } from './searchContent';
