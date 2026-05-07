@@ -6,3 +6,5 @@ export { WorkoutCard } from './WorkoutCard';
 export type { WorkoutCardData } from './WorkoutCard';
 export { ProgramCard } from './ProgramCard';
 export type { ProgramCardData } from './ProgramCard';
+export { BlogPostCard } from './BlogPostCard';
+export type { BlogPostCardData } from './BlogPostCard';
