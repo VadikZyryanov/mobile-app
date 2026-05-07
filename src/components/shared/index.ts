@@ -4,3 +4,5 @@ export { DifficultyDots } from './DifficultyDots';
 export { PaywallCard } from './PaywallCard';
 export { WorkoutCard } from './WorkoutCard';
 export type { WorkoutCardData } from './WorkoutCard';
+export { ProgramCard } from './ProgramCard';
+export type { ProgramCardData } from './ProgramCard';
