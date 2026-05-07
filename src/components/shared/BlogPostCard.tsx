@@ -14,7 +14,7 @@ export type BlogPostCardData = {
 function formatDate(iso: string | null): string {
   if (!iso) return '';
   const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
+  return `${String(d.getUTCDate()).padStart(2, '0')}.${String(d.getUTCMonth() + 1).padStart(2, '0')}.${d.getUTCFullYear()}`;
 }
 
 export function BlogPostCard({
@@ -26,7 +26,11 @@ export function BlogPostCard({
 }) {
   const theme = useTheme();
   return (
-    <Pressable onPress={() => onPress(post.slug)}>
+    <Pressable
+      onPress={() => onPress(post.slug)}
+      accessibilityRole="button"
+      accessibilityLabel={post.title}
+    >
       <Card variant="glass">
         <View style={{ gap: theme.spacing.md }}>
           <View

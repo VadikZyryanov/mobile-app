@@ -21,7 +21,11 @@ export function ExerciseRow({
 }) {
   const theme = useTheme();
   return (
-    <Pressable onPress={() => onPress(row.exercise_slug)}>
+    <Pressable
+      onPress={() => onPress(row.exercise_slug)}
+      accessibilityRole="button"
+      accessibilityLabel={row.exercise_name}
+    >
       <View
         style={{
           flexDirection: 'row',

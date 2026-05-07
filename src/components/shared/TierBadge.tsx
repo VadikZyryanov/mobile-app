@@ -3,13 +3,7 @@ import { View } from 'react-native';
 import { Text } from '@/components/ui';
 import { useTheme } from '@/theme';
 import type { Tier } from '@/features/exercises/lib/tierGate';
-
-const LABELS: Record<Tier, string> = {
-  free: 'FREE',
-  basic: 'BASIC',
-  pro: 'PRO',
-  pro_max: 'PRO MAX',
-};
+import { TIER_LABELS } from '@/features/exercises/lib/tierLabels';
 
 export function TierBadge({ tier }: { tier: Tier }) {
   const theme = useTheme();
@@ -32,7 +26,7 @@ export function TierBadge({ tier }: { tier: Tier }) {
         color={isPaid ? undefined : 'textMuted'}
         style={isPaid ? { color: theme.palette.white } : undefined}
       >
-        {LABELS[tier]}
+        {TIER_LABELS[tier]}
       </Text>
     </View>
   );

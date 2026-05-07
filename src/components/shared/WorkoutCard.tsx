@@ -25,7 +25,11 @@ export function WorkoutCard({
 }) {
   const theme = useTheme();
   return (
-    <Pressable onPress={() => onPress(workout.slug)}>
+    <Pressable
+      onPress={() => onPress(workout.slug)}
+      accessibilityRole="button"
+      accessibilityLabel={workout.title}
+    >
       <Card variant="glass">
         <View style={{ flexDirection: 'row', gap: theme.spacing.md, alignItems: 'center' }}>
           <View

@@ -26,7 +26,11 @@ export function ProgramCard({
 }) {
   const theme = useTheme();
   return (
-    <Pressable onPress={() => onPress(program.slug)}>
+    <Pressable
+      onPress={() => onPress(program.slug)}
+      accessibilityRole="button"
+      accessibilityLabel={program.title}
+    >
       <Card variant="glass">
         <View style={{ gap: theme.spacing.md }}>
           <View
