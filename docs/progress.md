@@ -5,15 +5,43 @@
 | 0   | Фундамент             | ✅ Done    | 2026-05-05      |
 | 1   | Auth + Supabase       | ✅ Done    | 2026-05-06      |
 | 2   | Backend MVP + контент | ✅ Done    | 2026-05-07      |
-| 3   | Подписки (RevenueCat) | ⬜ Planned |                 |
+| 3   | Подписки (RevenueCat) | ✅ Done    | 2026-05-09      |
 | 4   | Push + офлайн         | ⬜ Planned |                 |
 | 5   | Pro Max: питание      | ⬜ Planned |                 |
 | 6   | Админ-SPA             | ⬜ Planned |                 |
 
 ## Текущая итерация
 
-**Итерация 3** — Подписки (RevenueCat)  
+**Итерация 4** — Push + офлайн  
 _(не начата)_
+
+## Что реализовано (Итерация 3)
+
+- Dev Build: `eas.json` (development/preview/production профили), `expo-dev-client`, `react-native-purchases` v10+
+- DB: миграция `20260509000000_subscriptions.sql` — `subscription_status_enum`, 6 новых колонок в `profiles`, таблица `subscription_events` (idempotency log), RPC `refresh_my_subscription_tier`
+- DB типы обновлены в `database.types.ts` (subscription_status_enum, subscription_events, новые поля profiles)
+- RevenueCat: `src/lib/revenuecat.ts` (singleton configureRevenueCat), SDK init в `app/_layout.tsx`
+- `features/subscription/api/*` — обёртки: getOfferings, purchasePackage (с userCancelled), restorePurchases, getCustomerInfo, identifyUser/resetUser
+- `features/subscription/lib/mapEntitlementsToTier.ts` — маппинг entitlements → максимальный tier
+- `features/subscription/lib/tierFeatures.ts` — тексты тарифов
+- `features/subscription/hooks/*` — useOfferings, useCustomerInfo (live updates listener), usePurchase (+ refetch profile + RPC), useRestore, useSubscriptionSummary
+- Auth lifecycle: `auth.store.ts` — `identifyUser` при login, `resetUser` при signOut
+- Shared компоненты: `PlanCard.tsx` (glass-карточка плана), `SubscriptionSummaryCard.tsx` (управление из профиля)
+- Paywall: `app/paywall.tsx` — модальный экран с 3 планами, Restore Purchases; зарегистрирован в root Stack
+- `PaywallCard.tsx` обновлён — по умолчанию открывает `/paywall?required=<tier>`
+- Profile: заменён placeholder секции подписки на `<SubscriptionSummaryCard />`
+- Tier-gate: home.tsx — проверка доступа при тапе на workout/program (→ paywall), free-tier баннер
+- Edge Function: `supabase/functions/revenuecat-webhook/index.ts` — webhook с bearer auth, idempotency, маппинг 8 типов событий → profiles update
+- Тесты: 156 (144 из Iter 1-2 + 12 новых), все зелёные; mock react-native-purchases в jest.setup.ts
+- Plan: `docs/superpowers/plans/2026-05-09-iteration-3-subscriptions.md`
+
+**Ожидает ручного применения:**
+
+- Миграция: `supabase/migrations/20260509000000_subscriptions.sql` → Supabase Dashboard или `npx supabase db push`
+- RC Dashboard: создать entitlements (basic/pro/pro_max), products в App Store Connect + Google Play, offering `default`, webhook URL + secret
+- `.env` добавить: `EXPO_PUBLIC_RC_API_KEY_IOS`, `EXPO_PUBLIC_RC_API_KEY_ANDROID`
+- Edge Function: задеплоить + выставить env `RC_WEBHOOK_SECRET`
+- EAS: `npx eas login`, затем `npm run build:ios:dev`
 
 ## Что реализовано (Итерация 2)
 

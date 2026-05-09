@@ -1,15 +1,14 @@
 import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
-import Constants from 'expo-constants';
 
 import type { Database } from './database.types';
 
-const url = Constants.expoConfig?.extra?.supabaseUrl as string | undefined;
-const anonKey = Constants.expoConfig?.extra?.supabaseAnonKey as string | undefined;
+const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!url || !anonKey) {
-  throw new Error('Missing Supabase env vars. Check .env and app.config.ts.');
+  throw new Error('Missing Supabase env vars. Check .env');
 }
 
 export const supabase = createClient<Database>(url, anonKey, {

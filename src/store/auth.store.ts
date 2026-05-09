@@ -3,6 +3,7 @@ import { create } from 'zustand';
 
 import { signOut as signOutApi } from '@/features/auth/api/signOut';
 import { supabase } from '@/lib/supabase';
+import { identifyUser, resetUser } from '@/features/subscription/api/identifyUser';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -33,10 +34,15 @@ export const useAuthStore = create<AuthState>((set) => ({
         user: session?.user ?? null,
         status: session ? 'authenticated' : 'unauthenticated',
       });
+
+      if (session?.user?.id) {
+        identifyUser(session.user.id).catch(() => {});
+      }
     });
   },
 
   signOut: async () => {
     await signOutApi();
+    resetUser().catch(() => {});
   },
 }));

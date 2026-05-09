@@ -25,4 +25,8 @@ export const qk = {
     all: ['search'] as const,
     query: (q: string) => ['search', 'query', q] as const,
   },
+  rc: {
+    offerings: ['rc', 'offerings'] as const,
+    customerInfo: (uid: string) => ['rc', 'customer-info', uid] as const,
+  },
 } as const;

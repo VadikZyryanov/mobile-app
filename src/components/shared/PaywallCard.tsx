@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Card, Text } from '@/components/ui';
@@ -9,6 +10,12 @@ type Props = { requiredTier: Tier; onLearnMore?: () => void };
 
 export function PaywallCard({ requiredTier, onLearnMore }: Props) {
   const theme = useTheme();
+  const router = useRouter();
+
+  const handleLearnMore =
+    onLearnMore ??
+    (() => router.push({ pathname: '/paywall', params: { required: requiredTier } } as never));
+
   return (
     <Card variant="glass">
       <View
@@ -20,7 +27,7 @@ export function PaywallCard({ requiredTier, onLearnMore }: Props) {
         <Text variant="caption" color="textMuted" align="center">
           Откройте полный доступ к видео техники, программам и тренировкам
         </Text>
-        <Button label="Подробнее" variant="primary" size="md" onPress={onLearnMore ?? (() => {})} />
+        <Button label="Подробнее" variant="primary" size="md" onPress={handleLearnMore} />
       </View>
     </Card>
   );

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { FlatList, ScrollView, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import {
   BlogPostCard,
@@ -10,10 +10,12 @@ import {
   type ProgramCardData,
   type WorkoutCardData,
 } from '@/components/shared';
-import { Screen, Text } from '@/components/ui';
+import { Card, Screen, Text } from '@/components/ui';
 import { useProfile } from '@/features/auth/hooks/useProfile';
 import { useBlogPosts } from '@/features/blog/hooks';
 import { usePrograms } from '@/features/programs/hooks';
+import { hasAccess, type Tier } from '@/features/exercises/lib/tierGate';
+import { useSubscriptionSummary } from '@/features/subscription/hooks/useSubscriptionSummary';
 import { useWorkouts } from '@/features/workouts/hooks';
 import { getPublicUrl } from '@/services/storage';
 import { useTheme } from '@/theme';
@@ -22,9 +24,21 @@ export default function Home() {
   const theme = useTheme();
   const router = useRouter();
   const profile = useProfile();
+  const { data: summary } = useSubscriptionSummary();
   const workouts = useWorkouts();
   const programs = usePrograms();
   const posts = useBlogPosts();
+
+  const userTier = (summary?.tier ?? profile.data?.subscription_tier ?? 'free') as Tier;
+  const isFree = userTier === 'free';
+
+  function navigateWithTierCheck(path: string, minTier: Tier) {
+    if (!hasAccess(userTier, minTier)) {
+      router.push({ pathname: '/paywall', params: { required: minTier } } as never);
+    } else {
+      router.push(path as never);
+    }
+  }
 
   const wItems: WorkoutCardData[] = (workouts.data ?? []).slice(0, 5).map((w) => ({
     slug: w.slug,
@@ -78,6 +92,23 @@ export default function Home() {
           </Text>
         </View>
 
+        {isFree && (
+          <View style={{ paddingHorizontal: theme.spacing.lg }}>
+            <Pressable onPress={() => router.push('/paywall' as never)}>
+              <Card variant="glass" style={{ borderColor: theme.colors.accent, borderWidth: 1 }}>
+                <View style={{ gap: theme.spacing.xs }}>
+                  <Text variant="bodyLg" weight="semibold">
+                    Открой все тренировки
+                  </Text>
+                  <Text variant="caption" color="textMuted">
+                    Получи доступ к программам, видео техники и индивидуальному плану →
+                  </Text>
+                </View>
+              </Card>
+            </Pressable>
+          </View>
+        )}
+
         <QueryView
           isLoading={isLoading}
           isError={isError}
@@ -103,7 +134,9 @@ export default function Home() {
                   <View style={{ width: 320 }}>
                     <WorkoutCard
                       workout={item}
-                      onPress={(slug) => router.push(`/(tabs)/workouts/${slug}` as never)}
+                      onPress={(slug) =>
+                        navigateWithTierCheck(`/(tabs)/workouts/${slug}`, item.min_tier)
+                      }
                     />
                   </View>
                 )}
@@ -129,7 +162,9 @@ export default function Home() {
                   <View style={{ width: 280 }}>
                     <ProgramCard
                       program={item}
-                      onPress={(slug) => router.push(`/(tabs)/programs/${slug}` as never)}
+                      onPress={(slug) =>
+                        navigateWithTierCheck(`/(tabs)/programs/${slug}`, item.min_tier)
+                      }
                     />
                   </View>
                 )}

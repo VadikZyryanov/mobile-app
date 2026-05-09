@@ -31,13 +31,15 @@ const config: ExpoConfig = {
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: ['expo-router'],
+  plugins: ['expo-router', 'expo-dev-client', 'react-native-purchases'],
   experiments: {
     typedRoutes: true,
   },
   extra: {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+    revenueCatApiKeyIos: process.env.EXPO_PUBLIC_RC_API_KEY_IOS,
+    revenueCatApiKeyAndroid: process.env.EXPO_PUBLIC_RC_API_KEY_ANDROID,
   },
 };
 

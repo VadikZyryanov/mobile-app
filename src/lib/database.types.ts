@@ -17,6 +17,12 @@ export type Database = {
           is_admin: boolean;
           created_at: string;
           updated_at: string;
+          revenuecat_app_user_id: string | null;
+          subscription_status: Database['public']['Enums']['subscription_status_enum'];
+          subscription_product_id: string | null;
+          subscription_expires_at: string | null;
+          subscription_will_renew: boolean;
+          subscription_updated_at: string | null;
         };
         Insert: {
           id: string;
@@ -26,6 +32,12 @@ export type Database = {
           is_admin?: boolean;
           created_at?: string;
           updated_at?: string;
+          revenuecat_app_user_id?: string | null;
+          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
+          subscription_product_id?: string | null;
+          subscription_expires_at?: string | null;
+          subscription_will_renew?: boolean;
+          subscription_updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -35,6 +47,48 @@ export type Database = {
           is_admin?: boolean;
           created_at?: string;
           updated_at?: string;
+          revenuecat_app_user_id?: string | null;
+          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
+          subscription_product_id?: string | null;
+          subscription_expires_at?: string | null;
+          subscription_will_renew?: boolean;
+          subscription_updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      subscription_events: {
+        Row: {
+          id: string;
+          event_id: string;
+          event_type: string;
+          app_user_id: string;
+          product_id: string | null;
+          entitlement_id: string | null;
+          expires_at: string | null;
+          raw_payload: Json;
+          processed_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          event_type: string;
+          app_user_id: string;
+          product_id?: string | null;
+          entitlement_id?: string | null;
+          expires_at?: string | null;
+          raw_payload: Json;
+          processed_at?: string;
+        };
+        Update: {
+          id?: string;
+          event_id?: string;
+          event_type?: string;
+          app_user_id?: string;
+          product_id?: string | null;
+          entitlement_id?: string | null;
+          expires_at?: string | null;
+          raw_payload?: Json;
+          processed_at?: string;
         };
         Relationships: [];
       };
@@ -307,6 +361,10 @@ export type Database = {
         Args: { exercise_slug: string };
         Returns: string | null;
       };
+      refresh_my_subscription_tier: {
+        Args: Record<PropertyKey, never>;
+        Returns: Database['public']['Enums']['subscription_tier_enum'];
+      };
       search_content: {
         Args: { q: string };
         Returns: Array<{
@@ -323,6 +381,14 @@ export type Database = {
     };
     Enums: {
       subscription_tier_enum: 'free' | 'basic' | 'pro' | 'pro_max';
+      subscription_status_enum:
+        | 'active'
+        | 'in_grace_period'
+        | 'in_billing_retry'
+        | 'paused'
+        | 'expired'
+        | 'cancelled'
+        | 'unknown';
       workout_category_enum: 'upper' | 'lower' | 'full_body' | 'cardio' | 'core';
       muscle_group_enum:
         | 'chest'
@@ -462,6 +528,15 @@ export const Constants = {
   public: {
     Enums: {
       subscription_tier_enum: ['free', 'basic', 'pro', 'pro_max'] as const,
+      subscription_status_enum: [
+        'active',
+        'in_grace_period',
+        'in_billing_retry',
+        'paused',
+        'expired',
+        'cancelled',
+        'unknown',
+      ] as const,
       workout_category_enum: ['upper', 'lower', 'full_body', 'cardio', 'core'] as const,
       muscle_group_enum: [
         'chest',
