@@ -3,10 +3,11 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEffect } from 'react';
 import { Image, Pressable, ScrollView, View } from 'react-native';
 import { Screen, Text } from '@/components/ui';
-import { PaywallCard, QueryView } from '@/components/shared';
+import { OfflineBadge, PaywallCard, QueryView } from '@/components/shared';
 import { useExercise, useExerciseGifUrl, useExerciseVideoUrl } from '@/features/exercises/hooks';
 import { hasAccess, type Tier } from '@/features/exercises/lib/tierGate';
 import { useProfile } from '@/features/auth/hooks/useProfile';
+import { useCachedMediaUri } from '@/hooks/useCachedMediaUri';
 import { useTheme } from '@/theme';
 
 export default function ExerciseScreen() {
@@ -21,11 +22,25 @@ export default function ExerciseScreen() {
   const minTier = (exercise.data?.min_tier ?? 'free') as Tier;
   const allowed = hasAccess(userTier, minTier);
   const video = useExerciseVideoUrl(slug ?? '', allowed && Boolean(exercise.data?.video_path));
-  const player = useVideoPlayer(video.data ?? null);
+
+  const videoUri = useCachedMediaUri({
+    slug: slug ?? undefined,
+    type: 'video',
+    remoteUrl: video.data ?? undefined,
+    enabled: allowed && Boolean(exercise.data?.video_path),
+  });
+  const gifUri = useCachedMediaUri({
+    slug: slug ?? undefined,
+    type: 'gif',
+    remoteUrl: gif.data ?? undefined,
+    enabled: Boolean(exercise.data),
+  });
+
+  const player = useVideoPlayer(videoUri ?? null);
 
   useEffect(() => {
-    if (player && video.data) player.play();
-  }, [player, video.data]);
+    if (player && videoUri) player.play();
+  }, [player, videoUri]);
 
   return (
     <Screen padded={false}>
@@ -64,13 +79,13 @@ export default function ExerciseScreen() {
                   backgroundColor: theme.colors.bgElevated,
                 }}
               >
-                {gif.data && (
+                {(gifUri ?? gif.data) ? (
                   <Image
-                    source={{ uri: gif.data }}
+                    source={{ uri: gifUri ?? gif.data ?? undefined }}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
-                )}
+                ) : null}
               </View>
 
               <Text variant="hero" weight="bold">
@@ -101,22 +116,25 @@ export default function ExerciseScreen() {
                   {!allowed ? (
                     <PaywallCard requiredTier={minTier} />
                   ) : (
-                    <View
-                      style={{
-                        height: 220,
-                        borderRadius: theme.radii.xl,
-                        overflow: 'hidden',
-                        backgroundColor: theme.colors.bgElevated,
-                      }}
-                    >
-                      {video.data && (
-                        <VideoView
-                          player={player}
-                          style={{ width: '100%', height: '100%' }}
-                          allowsFullscreen
-                          contentFit="cover"
-                        />
-                      )}
+                    <View style={{ gap: theme.spacing.sm }}>
+                      {slug && <OfflineBadge slug={slug} type="video" />}
+                      <View
+                        style={{
+                          height: 220,
+                          borderRadius: theme.radii.xl,
+                          overflow: 'hidden',
+                          backgroundColor: theme.colors.bgElevated,
+                        }}
+                      >
+                        {videoUri && (
+                          <VideoView
+                            player={player}
+                            style={{ width: '100%', height: '100%' }}
+                            allowsFullscreen
+                            contentFit="cover"
+                          />
+                        )}
+                      </View>
                     </View>
                   )}
                 </View>

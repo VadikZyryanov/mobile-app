@@ -1,19 +1,37 @@
 # Roadmap & Progress
 
-| #   | Итерация              | Статус     | Дата завершения |
-| --- | --------------------- | ---------- | --------------- |
-| 0   | Фундамент             | ✅ Done    | 2026-05-05      |
-| 1   | Auth + Supabase       | ✅ Done    | 2026-05-06      |
-| 2   | Backend MVP + контент | ✅ Done    | 2026-05-07      |
-| 3   | Подписки (RevenueCat) | ✅ Done    | 2026-05-09      |
-| 4   | Push + офлайн         | ⬜ Planned |                 |
-| 5   | Pro Max: питание      | ⬜ Planned |                 |
-| 6   | Админ-SPA             | ⬜ Planned |                 |
+| #   | Итерация              | Статус         | Дата завершения |
+| --- | --------------------- | -------------- | --------------- |
+| 0   | Фундамент             | ✅ Done        | 2026-05-05      |
+| 1   | Auth + Supabase       | ✅ Done        | 2026-05-06      |
+| 2   | Backend MVP + контент | ✅ Done        | 2026-05-07      |
+| 3   | Подписки (RevenueCat) | ✅ Done        | 2026-05-09      |
+| 4   | Push + офлайн         | 🔄 In Progress |                 |
+| 5   | Pro Max: питание      | ⬜ Planned     |                 |
+| 6   | Админ-SPA             | ⬜ Planned     |                 |
 
 ## Текущая итерация
 
 **Итерация 4** — Push + офлайн  
-_(не начата)_
+Офлайн-часть реализована (2026-05-09). Push-уведомления — следующим шагом после EAS dev build.
+
+## Что реализовано (Итерация 4 — офлайн-часть)
+
+- Зависимости: `@tanstack/react-query-persist-client`, `@tanstack/query-async-storage-persister`, `@react-native-community/netinfo`, `expo-file-system`
+- `src/lib/storage.ts` — новые ключи `rqPersistorBuster`, `mediaCacheIndex`; хелперы `getJSON<T>` / `setJSON<T>`
+- `src/services/queryClient.ts` — `persister` (AsyncStorage, key `rq.cache.v1`), `persistOptions` (maxAge 7 дней, `shouldDehydrateQuery` для exercises/workouts/programs/blog, пропускает video-url/gif-url/search/rc); `networkMode: 'offlineFirst'` для queries, `'online'` для mutations
+- `app/_layout.tsx` — `PersistQueryClientProvider`, `OfflineBanner`, `mediaCache.init()`
+- `src/store/network.store.ts` — Zustand + NetInfo подписка
+- `src/hooks/useNetworkStatus.ts` — `{ isOnline: boolean }`
+- `src/lib/mediaCache.ts` — LRU-кэш 500 MB, index в AsyncStorage, дедупликация через inFlight Map, гистерезис 90%
+- `src/hooks/useCachedMediaUri.ts` — мгновенный remote URL + фоновая загрузка → swap на `file://`
+- `src/components/shared/OfflineBanner.tsx` — 28px BlurView полоска, slide-in Reanimated
+- `src/components/shared/OfflineBadge.tsx` — pill «Офлайн» через `useSyncExternalStore`
+- `app/(tabs)/exercises/[slug].tsx` — `useCachedMediaUri` для видео и GIF, `OfflineBadge`
+- `src/components/shared/ExerciseRow.tsx` — `OfflineBadge` для GIF
+- `app/(tabs)/profile.tsx` — секция «Хранилище»: размер, кол-во файлов, кнопки очистки
+- `src/store/auth.store.ts` — signOut очищает persister + queryClient + mediaCache + buster
+- Тесты: 181 (156 из Iter 0–3 + 25 новых), все зелёные
 
 ## Что реализовано (Итерация 3)
 

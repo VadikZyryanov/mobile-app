@@ -2,8 +2,11 @@ import type { Session, User } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
 import { signOut as signOutApi } from '@/features/auth/api/signOut';
+import { mediaCache } from '@/lib/mediaCache';
 import { supabase } from '@/lib/supabase';
+import { storage, StorageKeys } from '@/lib/storage';
 import { identifyUser, resetUser } from '@/features/subscription/api/identifyUser';
+import { queryClient, persister } from '@/services/queryClient';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -44,5 +47,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     await signOutApi();
     resetUser().catch(() => {});
+    await persister.removeClient();
+    queryClient.clear();
+    await mediaCache.clearAll();
+    await storage.set(StorageKeys.rqPersistorBuster, String(Date.now()));
   },
 }));

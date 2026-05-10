@@ -1,4 +1,4 @@
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, type ReactNode } from 'react';
@@ -7,8 +7,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Screen } from '@/components/ui';
+import { OfflineBanner } from '@/components/shared';
+import { mediaCache } from '@/lib/mediaCache';
 import { configureRevenueCat } from '@/lib/revenuecat';
-import { queryClient } from '@/services/queryClient';
+import { queryClient, persistOptions } from '@/services/queryClient';
 import { useAuthStore } from '@/store/auth.store';
 import { ThemeProvider, useTheme } from '@/theme';
 
@@ -50,12 +52,17 @@ function AuthGate({ children }: { children: ReactNode }) {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    void mediaCache.init();
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <ThemeProvider>
             <StatusBar style="auto" />
+            <OfflineBanner />
             <AuthGate>
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(auth)" />
@@ -67,7 +74,7 @@ export default function RootLayout() {
               </Stack>
             </AuthGate>
           </ThemeProvider>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

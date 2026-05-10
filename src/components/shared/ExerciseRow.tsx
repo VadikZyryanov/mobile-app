@@ -1,6 +1,7 @@
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui';
+import { OfflineBadge } from '@/components/shared/OfflineBadge';
 import { useTheme } from '@/theme';
 
 export type ExerciseRowData = {
@@ -51,9 +52,12 @@ export function ExerciseRow({
           </Text>
         </View>
         <View style={{ flex: 1, gap: 2 }}>
-          <Text variant="bodyLg" weight="medium">
-            {row.exercise_name}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text variant="bodyLg" weight="medium">
+              {row.exercise_name}
+            </Text>
+            <OfflineBadge slug={row.exercise_slug} type="gif" />
+          </View>
           <Text variant="caption" color="textMuted">
             {row.sets}×{row.reps} · отдых {row.rest_seconds}с
           </Text>
