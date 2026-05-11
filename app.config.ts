@@ -31,7 +31,7 @@ const config: ExpoConfig = {
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: ['expo-router', 'expo-dev-client', 'react-native-purchases'],
+  plugins: ['expo-router', 'expo-dev-client'],
   experiments: {
     typedRoutes: true,
   },
