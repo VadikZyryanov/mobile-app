@@ -29,4 +29,10 @@ export const qk = {
     offerings: ['rc', 'offerings'] as const,
     customerInfo: (uid: string) => ['rc', 'customer-info', uid] as const,
   },
+  nutrition: {
+    all: ['nutrition'] as const,
+    foods: (q?: string) => ['nutrition', 'foods', q ?? ''] as const,
+    entries: (date: string) => ['nutrition', 'entries', date] as const,
+    targets: (uid: string) => ['nutrition', 'targets', uid] as const,
+  },
 } as const;

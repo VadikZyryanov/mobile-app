@@ -1,11 +1,12 @@
 import { Alert, View } from 'react-native';
 import { useSyncExternalStore } from 'react';
 
-import { SubscriptionSummaryCard, TierBadge } from '@/components/shared';
+import { NutritionTeaserCard, SubscriptionSummaryCard, TierBadge } from '@/components/shared';
 import { Button, Card, Screen, Text } from '@/components/ui';
 import { useProfile } from '@/features/auth/hooks/useProfile';
-import type { Tier } from '@/features/exercises/lib/tierGate';
+import { hasAccess, type Tier } from '@/features/exercises/lib/tierGate';
 import { useSubscriptionSummary } from '@/features/subscription/hooks/useSubscriptionSummary';
+import { useNutritionTargets } from '@/features/nutrition/hooks';
 import { mediaCache } from '@/lib/mediaCache';
 import { queryClient, persister } from '@/services/queryClient';
 import { useAuthStore } from '@/store/auth.store';
@@ -33,6 +34,8 @@ export default function ProfileScreen() {
     (profile?.subscription_tier as Tier | undefined) ??
     'free') as Tier;
   const { size, count } = useMediaCacheStats();
+  const isProMax = hasAccess(tier, 'pro_max');
+  const nutritionTargets = useNutritionTargets(profile ?? undefined);
 
   function handleClearMediaCache() {
     Alert.alert('Очистить медиа-кэш', 'Удалить все загруженные видео и GIF?', [
@@ -86,6 +89,13 @@ export default function ProfileScreen() {
             Подписка
           </Text>
           <SubscriptionSummaryCard />
+        </View>
+
+        <View style={{ gap: theme.spacing.sm }}>
+          <Text variant="titleLg" weight="semibold">
+            Питание
+          </Text>
+          <NutritionTeaserCard variant={isProMax ? 'open' : 'locked'} targets={nutritionTargets} />
         </View>
 
         <View style={{ gap: theme.spacing.sm }}>

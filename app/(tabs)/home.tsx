@@ -3,6 +3,7 @@ import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import {
   BlogPostCard,
+  DailyNutritionSummary,
   ProgramCard,
   QueryView,
   WorkoutCard,
@@ -16,6 +17,7 @@ import { useBlogPosts } from '@/features/blog/hooks';
 import { usePrograms } from '@/features/programs/hooks';
 import { hasAccess, type Tier } from '@/features/exercises/lib/tierGate';
 import { useSubscriptionSummary } from '@/features/subscription/hooks/useSubscriptionSummary';
+import { useDailyEntries, useDailySummary, useNutritionTargets } from '@/features/nutrition/hooks';
 import { useWorkouts } from '@/features/workouts/hooks';
 import { getPublicUrl } from '@/services/storage';
 import { useTheme } from '@/theme';
@@ -31,6 +33,12 @@ export default function Home() {
 
   const userTier = (summary?.tier ?? profile.data?.subscription_tier ?? 'free') as Tier;
   const isFree = userTier === 'free';
+  const isProMax = hasAccess(userTier, 'pro_max');
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const nutritionTargets = useNutritionTargets(profile.data ?? undefined);
+  const { data: todayEntries = [] } = useDailyEntries(profile.data?.id, todayStr);
+  const nutritionSummary = useDailySummary(todayEntries, nutritionTargets);
 
   function navigateWithTierCheck(path: string, minTier: Tier) {
     if (!hasAccess(userTier, minTier)) {
@@ -106,6 +114,17 @@ export default function Home() {
                 </View>
               </Card>
             </Pressable>
+          </View>
+        )}
+
+        {isProMax && (
+          <View style={{ paddingHorizontal: theme.spacing.lg }}>
+            <DailyNutritionSummary
+              total={nutritionSummary.total}
+              targets={nutritionTargets}
+              compact
+              onPress={() => router.push('/(tabs)/nutrition' as never)}
+            />
           </View>
         )}
 

@@ -8,388 +8,503 @@ export type Database = {
   };
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          display_name: string | null;
-          avatar_url: string | null;
-          subscription_tier: Database['public']['Enums']['subscription_tier_enum'];
-          is_admin: boolean;
-          created_at: string;
-          updated_at: string;
-          revenuecat_app_user_id: string | null;
-          subscription_status: Database['public']['Enums']['subscription_status_enum'];
-          subscription_product_id: string | null;
-          subscription_expires_at: string | null;
-          subscription_will_renew: boolean;
-          subscription_updated_at: string | null;
-        };
-        Insert: {
-          id: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          is_admin?: boolean;
-          created_at?: string;
-          updated_at?: string;
-          revenuecat_app_user_id?: string | null;
-          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
-          subscription_product_id?: string | null;
-          subscription_expires_at?: string | null;
-          subscription_will_renew?: boolean;
-          subscription_updated_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          is_admin?: boolean;
-          created_at?: string;
-          updated_at?: string;
-          revenuecat_app_user_id?: string | null;
-          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
-          subscription_product_id?: string | null;
-          subscription_expires_at?: string | null;
-          subscription_will_renew?: boolean;
-          subscription_updated_at?: string | null;
-        };
-        Relationships: [];
-      };
-      subscription_events: {
-        Row: {
-          id: string;
-          event_id: string;
-          event_type: string;
-          app_user_id: string;
-          product_id: string | null;
-          entitlement_id: string | null;
-          expires_at: string | null;
-          raw_payload: Json;
-          processed_at: string;
-        };
-        Insert: {
-          id?: string;
-          event_id: string;
-          event_type: string;
-          app_user_id: string;
-          product_id?: string | null;
-          entitlement_id?: string | null;
-          expires_at?: string | null;
-          raw_payload: Json;
-          processed_at?: string;
-        };
-        Update: {
-          id?: string;
-          event_id?: string;
-          event_type?: string;
-          app_user_id?: string;
-          product_id?: string | null;
-          entitlement_id?: string | null;
-          expires_at?: string | null;
-          raw_payload?: Json;
-          processed_at?: string;
-        };
-        Relationships: [];
-      };
-      exercises: {
-        Row: {
-          id: string;
-          slug: string;
-          name: string;
-          description: string | null;
-          primary_muscle: Database['public']['Enums']['muscle_group_enum'];
-          secondary_muscles: Database['public']['Enums']['muscle_group_enum'][];
-          equipment: string[];
-          gif_path: string | null;
-          video_path: string | null;
-          min_tier: Database['public']['Enums']['subscription_tier_enum'];
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          slug: string;
-          name: string;
-          description?: string | null;
-          primary_muscle: Database['public']['Enums']['muscle_group_enum'];
-          secondary_muscles?: Database['public']['Enums']['muscle_group_enum'][];
-          equipment?: string[];
-          gif_path?: string | null;
-          video_path?: string | null;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          slug?: string;
-          name?: string;
-          description?: string | null;
-          primary_muscle?: Database['public']['Enums']['muscle_group_enum'];
-          secondary_muscles?: Database['public']['Enums']['muscle_group_enum'][];
-          equipment?: string[];
-          gif_path?: string | null;
-          video_path?: string | null;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      workouts: {
-        Row: {
-          id: string;
-          slug: string;
-          title: string;
-          description: string | null;
-          category: Database['public']['Enums']['workout_category_enum'];
-          cover_path: string | null;
-          duration_minutes: number;
-          difficulty: number;
-          min_tier: Database['public']['Enums']['subscription_tier_enum'];
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          slug: string;
-          title: string;
-          description?: string | null;
-          category: Database['public']['Enums']['workout_category_enum'];
-          cover_path?: string | null;
-          duration_minutes: number;
-          difficulty: number;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          slug?: string;
-          title?: string;
-          description?: string | null;
-          category?: Database['public']['Enums']['workout_category_enum'];
-          cover_path?: string | null;
-          duration_minutes?: number;
-          difficulty?: number;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      workout_exercises: {
-        Row: {
-          workout_id: string;
-          position: number;
-          exercise_id: string;
-          sets: number;
-          reps: string;
-          rest_seconds: number;
-          notes: string | null;
-        };
-        Insert: {
-          workout_id: string;
-          position: number;
-          exercise_id: string;
-          sets: number;
-          reps: string;
-          rest_seconds: number;
-          notes?: string | null;
-        };
-        Update: {
-          workout_id?: string;
-          position?: number;
-          exercise_id?: string;
-          sets?: number;
-          reps?: string;
-          rest_seconds?: number;
-          notes?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'workout_exercises_workout_id_fkey';
-            columns: ['workout_id'];
-            referencedRelation: 'workouts';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'workout_exercises_exercise_id_fkey';
-            columns: ['exercise_id'];
-            referencedRelation: 'exercises';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      programs: {
-        Row: {
-          id: string;
-          slug: string;
-          title: string;
-          description: string | null;
-          cover_path: string | null;
-          weeks: number;
-          sessions_per_week: number;
-          difficulty: number;
-          min_tier: Database['public']['Enums']['subscription_tier_enum'];
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          slug: string;
-          title: string;
-          description?: string | null;
-          cover_path?: string | null;
-          weeks: number;
-          sessions_per_week: number;
-          difficulty: number;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          slug?: string;
-          title?: string;
-          description?: string | null;
-          cover_path?: string | null;
-          weeks?: number;
-          sessions_per_week?: number;
-          difficulty?: number;
-          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      program_workouts: {
-        Row: {
-          program_id: string;
-          week: number;
-          day_of_week: number;
-          workout_id: string;
-        };
-        Insert: {
-          program_id: string;
-          week: number;
-          day_of_week: number;
-          workout_id: string;
-        };
-        Update: {
-          program_id?: string;
-          week?: number;
-          day_of_week?: number;
-          workout_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'program_workouts_program_id_fkey';
-            columns: ['program_id'];
-            referencedRelation: 'programs';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'program_workouts_workout_id_fkey';
-            columns: ['workout_id'];
-            referencedRelation: 'workouts';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       blog_posts: {
         Row: {
-          id: string;
-          slug: string;
-          title: string;
-          excerpt: string | null;
+          author_id: string;
           body: string;
           cover_path: string | null;
-          author_id: string;
-          published_at: string | null;
           created_at: string;
+          excerpt: string | null;
+          id: string;
+          published_at: string | null;
+          slug: string;
+          title: string;
           updated_at: string;
         };
         Insert: {
-          id?: string;
-          slug: string;
-          title: string;
-          excerpt?: string | null;
+          author_id: string;
           body: string;
           cover_path?: string | null;
-          author_id: string;
-          published_at?: string | null;
           created_at?: string;
+          excerpt?: string | null;
+          id?: string;
+          published_at?: string | null;
+          slug: string;
+          title: string;
           updated_at?: string;
         };
         Update: {
-          id?: string;
-          slug?: string;
-          title?: string;
-          excerpt?: string | null;
+          author_id?: string;
           body?: string;
           cover_path?: string | null;
-          author_id?: string;
-          published_at?: string | null;
           created_at?: string;
+          excerpt?: string | null;
+          id?: string;
+          published_at?: string | null;
+          slug?: string;
+          title?: string;
           updated_at?: string;
         };
         Relationships: [
           {
             foreignKeyName: 'blog_posts_author_id_fkey';
             columns: ['author_id'];
+            isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];
+      };
+      exercises: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          equipment: string[];
+          gif_path: string | null;
+          id: string;
+          min_tier: Database['public']['Enums']['subscription_tier_enum'];
+          name: string;
+          primary_muscle: Database['public']['Enums']['muscle_group_enum'];
+          search_tsv: unknown;
+          secondary_muscles: Database['public']['Enums']['muscle_group_enum'][];
+          slug: string;
+          updated_at: string;
+          video_path: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          equipment?: string[];
+          gif_path?: string | null;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          name: string;
+          primary_muscle: Database['public']['Enums']['muscle_group_enum'];
+          search_tsv?: unknown;
+          secondary_muscles?: Database['public']['Enums']['muscle_group_enum'][];
+          slug: string;
+          updated_at?: string;
+          video_path?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          equipment?: string[];
+          gif_path?: string | null;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          name?: string;
+          primary_muscle?: Database['public']['Enums']['muscle_group_enum'];
+          search_tsv?: unknown;
+          secondary_muscles?: Database['public']['Enums']['muscle_group_enum'][];
+          slug?: string;
+          updated_at?: string;
+          video_path?: string | null;
+        };
+        Relationships: [];
+      };
+      foods: {
+        Row: {
+          brand: string | null;
+          carbs_per_100g: number;
+          created_at: string;
+          fat_per_100g: number;
+          id: string;
+          kcal_per_100g: number;
+          name: string;
+          protein_per_100g: number;
+          slug: string;
+          updated_at: string;
+        };
+        Insert: {
+          brand?: string | null;
+          carbs_per_100g: number;
+          created_at?: string;
+          fat_per_100g: number;
+          id?: string;
+          kcal_per_100g: number;
+          name: string;
+          protein_per_100g: number;
+          slug: string;
+          updated_at?: string;
+        };
+        Update: {
+          brand?: string | null;
+          carbs_per_100g?: number;
+          created_at?: string;
+          fat_per_100g?: number;
+          id?: string;
+          kcal_per_100g?: number;
+          name?: string;
+          protein_per_100g?: number;
+          slug?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      nutrition_entries: {
+        Row: {
+          consumed_at: string;
+          consumed_on: string;
+          created_at: string;
+          food_id: string;
+          id: string;
+          meal_type: Database['public']['Enums']['meal_type_enum'];
+          quantity_grams: number;
+          user_id: string;
+        };
+        Insert: {
+          consumed_at?: string;
+          consumed_on?: string;
+          created_at?: string;
+          food_id: string;
+          id?: string;
+          meal_type: Database['public']['Enums']['meal_type_enum'];
+          quantity_grams: number;
+          user_id: string;
+        };
+        Update: {
+          consumed_at?: string;
+          consumed_on?: string;
+          created_at?: string;
+          food_id?: string;
+          id?: string;
+          meal_type?: Database['public']['Enums']['meal_type_enum'];
+          quantity_grams?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'nutrition_entries_food_id_fkey';
+            columns: ['food_id'];
+            isOneToOne: false;
+            referencedRelation: 'foods';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'nutrition_entries_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      profiles: {
+        Row: {
+          activity_level: Database['public']['Enums']['activity_level_enum'] | null;
+          avatar_url: string | null;
+          birth_date: string | null;
+          carbs_g_target: number | null;
+          created_at: string;
+          display_name: string | null;
+          fat_g_target: number | null;
+          height_cm: number | null;
+          id: string;
+          is_admin: boolean;
+          kcal_target: number | null;
+          protein_g_target: number | null;
+          revenuecat_app_user_id: string | null;
+          sex: Database['public']['Enums']['sex_enum'] | null;
+          subscription_expires_at: string | null;
+          subscription_product_id: string | null;
+          subscription_status: Database['public']['Enums']['subscription_status_enum'];
+          subscription_tier: Database['public']['Enums']['subscription_tier_enum'];
+          subscription_updated_at: string | null;
+          subscription_will_renew: boolean;
+          updated_at: string;
+          weight_goal: Database['public']['Enums']['weight_goal_enum'] | null;
+          weight_kg: number | null;
+        };
+        Insert: {
+          activity_level?: Database['public']['Enums']['activity_level_enum'] | null;
+          avatar_url?: string | null;
+          birth_date?: string | null;
+          carbs_g_target?: number | null;
+          created_at?: string;
+          display_name?: string | null;
+          fat_g_target?: number | null;
+          height_cm?: number | null;
+          id: string;
+          is_admin?: boolean;
+          kcal_target?: number | null;
+          protein_g_target?: number | null;
+          revenuecat_app_user_id?: string | null;
+          sex?: Database['public']['Enums']['sex_enum'] | null;
+          subscription_expires_at?: string | null;
+          subscription_product_id?: string | null;
+          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
+          subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          subscription_updated_at?: string | null;
+          subscription_will_renew?: boolean;
+          updated_at?: string;
+          weight_goal?: Database['public']['Enums']['weight_goal_enum'] | null;
+          weight_kg?: number | null;
+        };
+        Update: {
+          activity_level?: Database['public']['Enums']['activity_level_enum'] | null;
+          avatar_url?: string | null;
+          birth_date?: string | null;
+          carbs_g_target?: number | null;
+          created_at?: string;
+          display_name?: string | null;
+          fat_g_target?: number | null;
+          height_cm?: number | null;
+          id?: string;
+          is_admin?: boolean;
+          kcal_target?: number | null;
+          protein_g_target?: number | null;
+          revenuecat_app_user_id?: string | null;
+          sex?: Database['public']['Enums']['sex_enum'] | null;
+          subscription_expires_at?: string | null;
+          subscription_product_id?: string | null;
+          subscription_status?: Database['public']['Enums']['subscription_status_enum'];
+          subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          subscription_updated_at?: string | null;
+          subscription_will_renew?: boolean;
+          updated_at?: string;
+          weight_goal?: Database['public']['Enums']['weight_goal_enum'] | null;
+          weight_kg?: number | null;
+        };
+        Relationships: [];
+      };
+      program_workouts: {
+        Row: {
+          day_of_week: number;
+          program_id: string;
+          week: number;
+          workout_id: string;
+        };
+        Insert: {
+          day_of_week: number;
+          program_id: string;
+          week: number;
+          workout_id: string;
+        };
+        Update: {
+          day_of_week?: number;
+          program_id?: string;
+          week?: number;
+          workout_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'program_workouts_program_id_fkey';
+            columns: ['program_id'];
+            isOneToOne: false;
+            referencedRelation: 'programs';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'program_workouts_workout_id_fkey';
+            columns: ['workout_id'];
+            isOneToOne: false;
+            referencedRelation: 'workouts';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      programs: {
+        Row: {
+          cover_path: string | null;
+          created_at: string;
+          description: string | null;
+          difficulty: number;
+          id: string;
+          min_tier: Database['public']['Enums']['subscription_tier_enum'];
+          sessions_per_week: number;
+          slug: string;
+          title: string;
+          updated_at: string;
+          weeks: number;
+        };
+        Insert: {
+          cover_path?: string | null;
+          created_at?: string;
+          description?: string | null;
+          difficulty: number;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          sessions_per_week: number;
+          slug: string;
+          title: string;
+          updated_at?: string;
+          weeks: number;
+        };
+        Update: {
+          cover_path?: string | null;
+          created_at?: string;
+          description?: string | null;
+          difficulty?: number;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          sessions_per_week?: number;
+          slug?: string;
+          title?: string;
+          updated_at?: string;
+          weeks?: number;
+        };
+        Relationships: [];
+      };
+      subscription_events: {
+        Row: {
+          app_user_id: string;
+          entitlement_id: string | null;
+          event_id: string;
+          event_type: string;
+          expires_at: string | null;
+          id: string;
+          processed_at: string;
+          product_id: string | null;
+          raw_payload: Json;
+        };
+        Insert: {
+          app_user_id: string;
+          entitlement_id?: string | null;
+          event_id: string;
+          event_type: string;
+          expires_at?: string | null;
+          id?: string;
+          processed_at?: string;
+          product_id?: string | null;
+          raw_payload: Json;
+        };
+        Update: {
+          app_user_id?: string;
+          entitlement_id?: string | null;
+          event_id?: string;
+          event_type?: string;
+          expires_at?: string | null;
+          id?: string;
+          processed_at?: string;
+          product_id?: string | null;
+          raw_payload?: Json;
+        };
+        Relationships: [];
+      };
+      workout_exercises: {
+        Row: {
+          exercise_id: string;
+          notes: string | null;
+          position: number;
+          reps: string;
+          rest_seconds: number;
+          sets: number;
+          workout_id: string;
+        };
+        Insert: {
+          exercise_id: string;
+          notes?: string | null;
+          position: number;
+          reps: string;
+          rest_seconds: number;
+          sets: number;
+          workout_id: string;
+        };
+        Update: {
+          exercise_id?: string;
+          notes?: string | null;
+          position?: number;
+          reps?: string;
+          rest_seconds?: number;
+          sets?: number;
+          workout_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'workout_exercises_exercise_id_fkey';
+            columns: ['exercise_id'];
+            isOneToOne: false;
+            referencedRelation: 'exercises';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'workout_exercises_workout_id_fkey';
+            columns: ['workout_id'];
+            isOneToOne: false;
+            referencedRelation: 'workouts';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      workouts: {
+        Row: {
+          category: Database['public']['Enums']['workout_category_enum'];
+          cover_path: string | null;
+          created_at: string;
+          description: string | null;
+          difficulty: number;
+          duration_minutes: number;
+          id: string;
+          min_tier: Database['public']['Enums']['subscription_tier_enum'];
+          search_tsv: unknown;
+          slug: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          category: Database['public']['Enums']['workout_category_enum'];
+          cover_path?: string | null;
+          created_at?: string;
+          description?: string | null;
+          difficulty: number;
+          duration_minutes: number;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          search_tsv?: unknown;
+          slug: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          category?: Database['public']['Enums']['workout_category_enum'];
+          cover_path?: string | null;
+          created_at?: string;
+          description?: string | null;
+          difficulty?: number;
+          duration_minutes?: number;
+          id?: string;
+          min_tier?: Database['public']['Enums']['subscription_tier_enum'];
+          search_tsv?: unknown;
+          slug?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      is_admin: {
-        Args: Record<PropertyKey, never>;
-        Returns: boolean;
-      };
+      get_exercise_gif_url: { Args: { exercise_slug: string }; Returns: string };
       get_exercise_video_url: {
         Args: { exercise_slug: string };
-        Returns: string | null;
+        Returns: string;
       };
-      get_exercise_gif_url: {
-        Args: { exercise_slug: string };
-        Returns: string | null;
-      };
+      has_pro_max_access: { Args: never; Returns: boolean };
+      is_admin: { Args: never; Returns: boolean };
       refresh_my_subscription_tier: {
-        Args: Record<PropertyKey, never>;
+        Args: never;
         Returns: Database['public']['Enums']['subscription_tier_enum'];
       };
       search_content: {
         Args: { q: string };
-        Returns: Array<{
-          kind: string;
+        Returns: {
+          cover_path: string;
           id: string;
-          slug: string;
-          title: string;
-          subtitle: string;
-          cover_path: string | null;
+          kind: string;
           min_tier: Database['public']['Enums']['subscription_tier_enum'];
           rank: number;
-        }>;
+          slug: string;
+          subtitle: string;
+          title: string;
+        }[];
       };
     };
     Enums: {
-      subscription_tier_enum: 'free' | 'basic' | 'pro' | 'pro_max';
-      subscription_status_enum:
-        | 'active'
-        | 'in_grace_period'
-        | 'in_billing_retry'
-        | 'paused'
-        | 'expired'
-        | 'cancelled'
-        | 'unknown';
-      workout_category_enum: 'upper' | 'lower' | 'full_body' | 'cardio' | 'core';
+      activity_level_enum: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
+      meal_type_enum: 'breakfast' | 'lunch' | 'dinner' | 'snack';
       muscle_group_enum:
         | 'chest'
         | 'back'
@@ -402,6 +517,18 @@ export type Database = {
         | 'calves'
         | 'core'
         | 'cardio';
+      sex_enum: 'male' | 'female';
+      subscription_status_enum:
+        | 'active'
+        | 'in_grace_period'
+        | 'in_billing_retry'
+        | 'paused'
+        | 'expired'
+        | 'cancelled'
+        | 'unknown';
+      subscription_tier_enum: 'free' | 'basic' | 'pro' | 'pro_max';
+      weight_goal_enum: 'lose' | 'maintain' | 'gain';
+      workout_category_enum: 'upper' | 'lower' | 'full_body' | 'cardio' | 'core';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -527,17 +654,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      subscription_tier_enum: ['free', 'basic', 'pro', 'pro_max'] as const,
-      subscription_status_enum: [
-        'active',
-        'in_grace_period',
-        'in_billing_retry',
-        'paused',
-        'expired',
-        'cancelled',
-        'unknown',
-      ] as const,
-      workout_category_enum: ['upper', 'lower', 'full_body', 'cardio', 'core'] as const,
+      activity_level_enum: ['sedentary', 'light', 'moderate', 'active', 'very_active'],
+      meal_type_enum: ['breakfast', 'lunch', 'dinner', 'snack'],
       muscle_group_enum: [
         'chest',
         'back',
@@ -550,7 +668,20 @@ export const Constants = {
         'calves',
         'core',
         'cardio',
-      ] as const,
+      ],
+      sex_enum: ['male', 'female'],
+      subscription_status_enum: [
+        'active',
+        'in_grace_period',
+        'in_billing_retry',
+        'paused',
+        'expired',
+        'cancelled',
+        'unknown',
+      ],
+      subscription_tier_enum: ['free', 'basic', 'pro', 'pro_max'],
+      weight_goal_enum: ['lose', 'maintain', 'gain'],
+      workout_category_enum: ['upper', 'lower', 'full_body', 'cardio', 'core'],
     },
   },
 } as const;

@@ -7,13 +7,37 @@
 | 2   | Backend MVP + контент | ✅ Done        | 2026-05-07      |
 | 3   | Подписки (RevenueCat) | ✅ Done        | 2026-05-09      |
 | 4   | Push + офлайн         | 🔄 In Progress |                 |
-| 5   | Pro Max: питание      | ⬜ Planned     |                 |
+| 5   | Pro Max: питание      | ✅ Done        | 2026-05-11      |
 | 6   | Админ-SPA             | ⬜ Planned     |                 |
 
 ## Текущая итерация
 
 **Итерация 4** — Push + офлайн  
 Офлайн-часть реализована (2026-05-09). Push-уведомления — следующим шагом после EAS dev build.
+
+## Что реализовано (Итерация 5)
+
+- DB: миграция `20260510000000_nutrition.sql` — enums (`sex_enum`, `activity_level_enum`, `weight_goal_enum`, `meal_type_enum`), расширение `profiles` (10 новых колонок: физ. параметры + КБЖУ override), таблицы `foods` (admin-managed, RLS) и `nutrition_entries` (Pro Max gate через `has_pro_max_access()`)
+- Seed: ~74 продукта в `supabase/seed.sql` (мясо, рыба, молочка, крупы, овощи, фрукты, орехи, выпечка, напитки)
+- `database.types.ts` перегенерирован (новые таблицы и enums)
+- `src/lib/queryKeys.ts` — ветка `nutrition.{foods, entries, targets}`
+- `src/features/nutrition/lib/computeTargets.ts` — Mifflin-St Jeor + activity factor + goal delta + manual override
+- `src/features/nutrition/lib/nutritionMath.ts` — `scaleNutrients`, `sumMacros`
+- `src/features/nutrition/lib/mealLabels.ts` — русские метки `MEAL_LABELS`, порядок `MEAL_ORDER`
+- `src/features/nutrition/api/*` — `listFoods` (ilike-поиск), `listEntriesForDate` (join с foods), `createEntry`, `updateEntry`, `deleteEntry`
+- `src/features/nutrition/hooks/*` — `useFoods`, `useDailyEntries`, `useDailySummary`, `useNutritionTargets`, `useCreateEntry`, `useUpdateEntry`, `useDeleteEntry`
+- Shared компоненты: `MacroProgressBar`, `DailyNutritionSummary`, `FoodEntryRow`, `MealSection`, `QuantityStepper`, `FoodPickerSheet`, `NutritionTeaserCard`
+- Экраны: `app/(tabs)/nutrition/_layout`, `index` (дневник с date stepper + 4 секции приёмов), `add` (поиск + граммы + preview), `targets` (форма физ. параметров + auto/manual цели)
+- Интеграция: Home — `DailyNutritionSummary compact` для Pro Max; Profile — `NutritionTeaserCard`; `_layout.tsx` — nutrition stack с `href: null`
+- Тесты: 230 (181 из Iter 0–4 + 49 новых), все зелёные
+- Спека: `docs/superpowers/specs/2026-05-10-iteration-5-nutrition-design.md`
+- План: `docs/superpowers/plans/2026-05-10-iteration-5-nutrition.md`
+
+**Ожидает ручного применения:**
+
+- Миграция: `supabase/migrations/20260510000000_nutrition.sql` → Supabase Dashboard
+- Seed: `supabase/seed.sql` (блок foods) → Studio SQL editor
+- Тестовый аккаунт: `subscription_tier='pro_max'` через Studio для ручной проверки
 
 ## Что реализовано (Итерация 4 — офлайн-часть)
 

@@ -40,8 +40,9 @@ export default function TabsLayout() {
       <Tabs.Screen name="search" options={{ title: 'Поиск' }} />
       <Tabs.Screen name="blog" options={{ title: 'Блог' }} />
       <Tabs.Screen name="profile" options={{ title: 'Профиль' }} />
-      {/* exercises — nested stack without tab button */}
+      {/* exercises + nutrition — nested stacks without tab button */}
       <Tabs.Screen name="exercises" options={{ href: null }} />
+      <Tabs.Screen name="nutrition" options={{ href: null }} />
     </Tabs>
   );
 }
