@@ -8,6 +8,54 @@ export type Database = {
   };
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string;
+          admin_id: string;
+          after: Json | null;
+          before: Json | null;
+          created_at: string;
+          id: string;
+          note: string | null;
+          target_user_id: string | null;
+        };
+        Insert: {
+          action: string;
+          admin_id: string;
+          after?: Json | null;
+          before?: Json | null;
+          created_at?: string;
+          id?: string;
+          note?: string | null;
+          target_user_id?: string | null;
+        };
+        Update: {
+          action?: string;
+          admin_id?: string;
+          after?: Json | null;
+          before?: Json | null;
+          created_at?: string;
+          id?: string;
+          note?: string | null;
+          target_user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'admin_audit_log_admin_id_fkey';
+            columns: ['admin_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'admin_audit_log_target_user_id_fkey';
+            columns: ['target_user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       blog_posts: {
         Row: {
           author_id: string;
@@ -198,6 +246,7 @@ export type Database = {
           carbs_g_target: number | null;
           created_at: string;
           display_name: string | null;
+          email: string | null;
           fat_g_target: number | null;
           height_cm: number | null;
           id: string;
@@ -207,6 +256,7 @@ export type Database = {
           revenuecat_app_user_id: string | null;
           sex: Database['public']['Enums']['sex_enum'] | null;
           subscription_expires_at: string | null;
+          subscription_override_note: string | null;
           subscription_product_id: string | null;
           subscription_status: Database['public']['Enums']['subscription_status_enum'];
           subscription_tier: Database['public']['Enums']['subscription_tier_enum'];
@@ -223,6 +273,7 @@ export type Database = {
           carbs_g_target?: number | null;
           created_at?: string;
           display_name?: string | null;
+          email?: string | null;
           fat_g_target?: number | null;
           height_cm?: number | null;
           id: string;
@@ -232,6 +283,7 @@ export type Database = {
           revenuecat_app_user_id?: string | null;
           sex?: Database['public']['Enums']['sex_enum'] | null;
           subscription_expires_at?: string | null;
+          subscription_override_note?: string | null;
           subscription_product_id?: string | null;
           subscription_status?: Database['public']['Enums']['subscription_status_enum'];
           subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
@@ -248,6 +300,7 @@ export type Database = {
           carbs_g_target?: number | null;
           created_at?: string;
           display_name?: string | null;
+          email?: string | null;
           fat_g_target?: number | null;
           height_cm?: number | null;
           id?: string;
@@ -257,6 +310,7 @@ export type Database = {
           revenuecat_app_user_id?: string | null;
           sex?: Database['public']['Enums']['sex_enum'] | null;
           subscription_expires_at?: string | null;
+          subscription_override_note?: string | null;
           subscription_product_id?: string | null;
           subscription_status?: Database['public']['Enums']['subscription_status_enum'];
           subscription_tier?: Database['public']['Enums']['subscription_tier_enum'];
@@ -477,15 +531,52 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_override_subscription: {
+        Args: {
+          p_expires_at: string;
+          p_note: string;
+          p_status: Database['public']['Enums']['subscription_status_enum'];
+          p_tier: Database['public']['Enums']['subscription_tier_enum'];
+          p_user_id: string;
+          p_will_renew: boolean;
+        };
+        Returns: {
+          activity_level: Database['public']['Enums']['activity_level_enum'] | null;
+          avatar_url: string | null;
+          birth_date: string | null;
+          carbs_g_target: number | null;
+          created_at: string;
+          display_name: string | null;
+          email: string | null;
+          fat_g_target: number | null;
+          height_cm: number | null;
+          id: string;
+          is_admin: boolean;
+          kcal_target: number | null;
+          protein_g_target: number | null;
+          revenuecat_app_user_id: string | null;
+          sex: Database['public']['Enums']['sex_enum'] | null;
+          subscription_expires_at: string | null;
+          subscription_override_note: string | null;
+          subscription_product_id: string | null;
+          subscription_status: Database['public']['Enums']['subscription_status_enum'];
+          subscription_tier: Database['public']['Enums']['subscription_tier_enum'];
+          subscription_updated_at: string | null;
+          subscription_will_renew: boolean;
+          updated_at: string;
+          weight_goal: Database['public']['Enums']['weight_goal_enum'] | null;
+          weight_kg: number | null;
+        };
+      };
       get_exercise_gif_url: { Args: { exercise_slug: string }; Returns: string };
       get_exercise_video_url: {
         Args: { exercise_slug: string };
         Returns: string;
       };
-      has_pro_max_access: { Args: never; Returns: boolean };
-      is_admin: { Args: never; Returns: boolean };
+      has_pro_max_access: { Args: Record<PropertyKey, never>; Returns: boolean };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       refresh_my_subscription_tier: {
-        Args: never;
+        Args: Record<PropertyKey, never>;
         Returns: Database['public']['Enums']['subscription_tier_enum'];
       };
       search_content: {

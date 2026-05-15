@@ -52,3 +52,7 @@ yarn-error.*
 
 # Supabase CLI temp cache
 supabase/.temp/
+
+# Admin SPA
+admin/node_modules/
+admin/dist/

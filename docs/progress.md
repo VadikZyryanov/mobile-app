@@ -8,12 +8,42 @@
 | 3   | Подписки (RevenueCat) | ✅ Done        | 2026-05-09      |
 | 4   | Push + офлайн         | 🔄 In Progress |                 |
 | 5   | Pro Max: питание      | ✅ Done        | 2026-05-11      |
-| 6   | Админ-SPA             | ⬜ Planned     |                 |
+| 6   | Админ-SPA (6a)        | ✅ Done        | 2026-05-15      |
 
 ## Текущая итерация
 
-**Итерация 4** — Push + офлайн  
-Офлайн-часть реализована (2026-05-09). Push-уведомления — следующим шагом после EAS dev build.
+Все итерации до 6a завершены. Следующая: **6b** (CRUD контента).
+
+## Что реализовано (Итерация 6a)
+
+- Каркас `admin/` — Vite 5 + React 18 + TypeScript 5.9 + Tailwind CSS 3.4 + shadcn/ui (ручные примитивы)
+- `admin/tsconfig.json` с алиасами `@/*` → `admin/src/*`, `@shared/*` → `../src/*`
+- `admin/src/lib/` — supabase (localStorage-based), queryClient, queryKeys, utils (cn), hasAccess, formatDate
+- Auth flow: `signInAdmin` (signInWithPassword → проверка `is_admin` → signOut + throw если не-админ), `useAdminSession` hook, Zustand auth.store
+- `<ProtectedRoute>` — редиректит не-аутентифицированных и не-админов на `/login`
+- `<AppShell>` — боковая навигация (Пользователи), шапка с именем + logout
+- React Router v6: `/login`, `/users`, `/users/:id` (drawer-over-page)
+- `features/users/api/` — `listUsers` (фильтр tier + поиск ilike + pagination), `getUserById`, `overrideSubscription` (RPC `admin_override_subscription`)
+- `features/users/hooks/` — `useUsers`, `useUser`, `useOverrideSubscription`
+- `features/users/components/` — `UsersTable`, `TierFilter`, `UserSearchInput` (debounce 300ms), `UserDetailDrawer`, `SubscriptionOverrideDialog` (rhf + zod)
+- `features/users/pages/UsersListPage.tsx`
+- `features/auth/pages/LoginPage.tsx`
+- Vitest + RTL + MSW v2: 26 тестов, все зелёные
+- Корневой `package.json`: 7 `admin:*` скриптов; `.gitignore` + `tsconfig.json` + `jest.config.js` обновлены
+
+**DB (применено через Supabase MCP, 2026-05-15):**
+
+- `profiles.email` (mirror из auth.users, backfill + триггер)
+- `profiles.subscription_override_note`
+- `admin_audit_log` + RLS (SELECT для admin, INSERT только через RPC)
+- `profiles_admin_select` + `profiles_admin_update` RLS политики
+- RPC `admin_override_subscription` (SECURITY DEFINER, атомарный override + audit)
+- `test@mail.ru` → `is_admin = true`
+- `src/lib/database.types.ts` перегенерирован
+
+**Финальные проверки (2026-05-15):**
+
+- `admin:typecheck` ✅, `admin:lint` ✅, `admin:test` ✅ (26/26), `admin:build` ✅
 
 ## Что реализовано (Итерация 5)
 
@@ -33,11 +63,15 @@
 - Спека: `docs/superpowers/specs/2026-05-10-iteration-5-nutrition-design.md`
 - План: `docs/superpowers/plans/2026-05-10-iteration-5-nutrition.md`
 
+**Применено через CLI (2026-05-11):**
+
+- Миграция `20260510000000_nutrition.sql` — применена через `supabase migration repair`
+- Seed (74 продукта) — залит через `npx supabase db query --linked`
+- Тестовый аккаунт `test@mail.ru` — `subscription_tier` установлен в `pro_max`
+
 **Ожидает ручного применения:**
 
-- Миграция: `supabase/migrations/20260510000000_nutrition.sql` → Supabase Dashboard
-- Seed: `supabase/seed.sql` (блок foods) → Studio SQL editor
-- Тестовый аккаунт: `subscription_tier='pro_max'` через Studio для ручной проверки
+- Push-уведомления (Итерация 4) — отложены до EAS dev build
 
 ## Что реализовано (Итерация 4 — офлайн-часть)
 

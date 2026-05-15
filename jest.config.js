@@ -4,6 +4,6 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/', '/.expo/'],
+  testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/', '/.expo/', '/admin/'],
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts', '!src/**/index.ts'],
 };

@@ -16,7 +16,14 @@
     "build:ios:dev": "eas build -p ios --profile development",
     "build:android:dev": "eas build -p android --profile development",
     "build:ios:preview": "eas build -p ios --profile preview",
-    "build:android:preview": "eas build -p android --profile preview"
+    "build:android:preview": "eas build -p android --profile preview",
+    "admin:install": "npm --prefix admin install",
+    "admin:dev": "npm --prefix admin run dev",
+    "admin:build": "npm --prefix admin run build",
+    "admin:preview": "npm --prefix admin run preview",
+    "admin:lint": "npm --prefix admin run lint",
+    "admin:typecheck": "npm --prefix admin run typecheck",
+    "admin:test": "npm --prefix admin run test"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
