@@ -5,3 +5,10 @@ dist/
 .env.local
 .env*.local
 .DS_Store
+
+# IDE auto-compiled JS (all source is TypeScript)
+src/**/*.js
+tests/**/*.js
+tailwind.config.js
+vite.config.js
+vitest.config.js

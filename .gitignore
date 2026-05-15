@@ -40,6 +40,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# VSCode TS compiler emit (noEmit should be set, but just in case)
+src/**/*.js
+src/**/*.js.map
+
 # generated native folders
 /ios
 /android
