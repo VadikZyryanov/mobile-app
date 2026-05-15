@@ -15,6 +15,8 @@ export type Database = {
           after: Json | null;
           before: Json | null;
           created_at: string;
+          entity_id: string | null;
+          entity_type: string | null;
           id: string;
           note: string | null;
           target_user_id: string | null;
@@ -25,6 +27,8 @@ export type Database = {
           after?: Json | null;
           before?: Json | null;
           created_at?: string;
+          entity_id?: string | null;
+          entity_type?: string | null;
           id?: string;
           note?: string | null;
           target_user_id?: string | null;
@@ -35,6 +39,8 @@ export type Database = {
           after?: Json | null;
           before?: Json | null;
           created_at?: string;
+          entity_id?: string | null;
+          entity_type?: string | null;
           id?: string;
           note?: string | null;
           target_user_id?: string | null;
@@ -106,6 +112,7 @@ export type Database = {
       exercises: {
         Row: {
           created_at: string;
+          deleted_at: string | null;
           description: string | null;
           equipment: string[];
           gif_path: string | null;
@@ -121,6 +128,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           equipment?: string[];
           gif_path?: string | null;
@@ -136,6 +144,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           equipment?: string[];
           gif_path?: string | null;
@@ -156,6 +165,7 @@ export type Database = {
           brand: string | null;
           carbs_per_100g: number;
           created_at: string;
+          deleted_at: string | null;
           fat_per_100g: number;
           id: string;
           kcal_per_100g: number;
@@ -168,6 +178,7 @@ export type Database = {
           brand?: string | null;
           carbs_per_100g: number;
           created_at?: string;
+          deleted_at?: string | null;
           fat_per_100g: number;
           id?: string;
           kcal_per_100g: number;
@@ -180,6 +191,7 @@ export type Database = {
           brand?: string | null;
           carbs_per_100g?: number;
           created_at?: string;
+          deleted_at?: string | null;
           fat_per_100g?: number;
           id?: string;
           kcal_per_100g?: number;
@@ -486,6 +498,7 @@ export type Database = {
           category: Database['public']['Enums']['workout_category_enum'];
           cover_path: string | null;
           created_at: string;
+          deleted_at: string | null;
           description: string | null;
           difficulty: number;
           duration_minutes: number;
@@ -500,6 +513,7 @@ export type Database = {
           category: Database['public']['Enums']['workout_category_enum'];
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           difficulty: number;
           duration_minutes: number;
@@ -514,6 +528,7 @@ export type Database = {
           category?: Database['public']['Enums']['workout_category_enum'];
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description?: string | null;
           difficulty?: number;
           duration_minutes?: number;
@@ -531,6 +546,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_log_content_action: {
+        Args: {
+          p_action: string;
+          p_after: Json;
+          p_before: Json;
+          p_entity_id: string;
+          p_entity_type: string;
+          p_note?: string;
+        };
+        Returns: undefined;
+      };
       admin_override_subscription: {
         Args: {
           p_expires_at: string;
@@ -567,16 +593,30 @@ export type Database = {
           weight_goal: Database['public']['Enums']['weight_goal_enum'] | null;
           weight_kg: number | null;
         };
+        SetofOptions: {
+          from: '*';
+          to: 'profiles';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      admin_save_program_with_workouts: {
+        Args: { p_program: Json; p_schedule: Json };
+        Returns: Json;
+      };
+      admin_save_workout_with_exercises: {
+        Args: { p_exercises: Json; p_workout: Json };
+        Returns: Json;
       };
       get_exercise_gif_url: { Args: { exercise_slug: string }; Returns: string };
       get_exercise_video_url: {
         Args: { exercise_slug: string };
         Returns: string;
       };
-      has_pro_max_access: { Args: Record<PropertyKey, never>; Returns: boolean };
-      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      has_pro_max_access: { Args: never; Returns: boolean };
+      is_admin: { Args: never; Returns: boolean };
       refresh_my_subscription_tier: {
-        Args: Record<PropertyKey, never>;
+        Args: never;
         Returns: Database['public']['Enums']['subscription_tier_enum'];
       };
       search_content: {

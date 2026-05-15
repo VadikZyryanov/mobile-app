@@ -22,6 +22,7 @@ const makeEntry = (kcal: number, grams: number): NutritionEntryWithFood => ({
     carbs_per_100g: 0,
     created_at: '',
     updated_at: '',
+    deleted_at: null,
   },
 });
 

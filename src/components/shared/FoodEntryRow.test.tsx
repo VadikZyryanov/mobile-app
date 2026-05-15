@@ -27,6 +27,7 @@ const ENTRY: NutritionEntryWithFood = {
     carbs_per_100g: 0,
     created_at: '',
     updated_at: '',
+    deleted_at: null,
   },
 };
 
