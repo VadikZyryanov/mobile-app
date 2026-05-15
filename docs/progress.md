@@ -1,18 +1,125 @@
 # Roadmap & Progress
 
-| #   | Итерация              | Статус         | Дата завершения |
-| --- | --------------------- | -------------- | --------------- |
-| 0   | Фундамент             | ✅ Done        | 2026-05-05      |
-| 1   | Auth + Supabase       | ✅ Done        | 2026-05-06      |
-| 2   | Backend MVP + контент | ✅ Done        | 2026-05-07      |
-| 3   | Подписки (RevenueCat) | ✅ Done        | 2026-05-09      |
-| 4   | Push + офлайн         | 🔄 In Progress |                 |
-| 5   | Pro Max: питание      | ✅ Done        | 2026-05-11      |
-| 6   | Админ-SPA (6a)        | ✅ Done        | 2026-05-15      |
+| #   | Итерация                       | Статус         | Дата завершения |
+| --- | ------------------------------ | -------------- | --------------- |
+| 0   | Фундамент                      | ✅ Done        | 2026-05-05      |
+| 1   | Auth + Supabase                | ✅ Done        | 2026-05-06      |
+| 2   | Backend MVP + контент          | ✅ Done        | 2026-05-07      |
+| 3   | Подписки (RevenueCat)          | ✅ Done        | 2026-05-09      |
+| 4   | Push + офлайн                  | 🔄 In Progress |                 |
+| 5   | Pro Max: питание               | ✅ Done        | 2026-05-11      |
+| 6a  | Админ-SPA: каркас + Users      | ✅ Done        | 2026-05-15      |
+| 6b  | Админ-SPA: CRUD контента       | 📋 Planned     |                 |
+| 6c  | Админ-SPA: метрики + audit log | 📋 Planned     |                 |
+| 7   | Push: дожать Iter 4 на EAS     | 📋 Planned     |                 |
+| 8   | Apple Health / Google Fit sync | 📋 Planned     |                 |
 
 ## Текущая итерация
 
 Все итерации до 6a завершены. Следующая: **6b** (CRUD контента).
+
+## План на будущие итерации
+
+### Итерация 6b — Админ-SPA: CRUD контента
+
+**Цель:** управление всем контентом приложения из админки без захода в Supabase Studio.
+
+**Сущности (CRUD: list / create / edit / delete):**
+
+- `exercises` — упражнения (имя, описание, техника, difficulty, мышечные группы, tier, video + gif)
+- `workouts` — тренировки (имя, тип, длительность, tier, обложка) + связь `workout_exercises` (упражнения с sets/reps/rest, порядок)
+- `programs` — программы (имя, длительность, tier, обложка) + связь `program_workouts` (тренировки по дням/неделям)
+- `blog_posts` — посты блога (заголовок, обложка, markdown-контент, опубликовано/draft, published_at)
+- `foods` — продукты для nutrition (имя, КБЖУ на 100г, категория)
+
+**Storage uploads (через Supabase Storage):**
+
+- Видео упражнений → `exercise-media` (private bucket, signed URL через существующий RPC `get_exercise_video_url`)
+- GIF превью → `exercise-gifs` (public)
+- Обложки тренировок/программ/постов → `workout-covers`, `program-covers`, `blog-covers` (public)
+- UI: drag-n-drop, прогресс загрузки, валидация типа/размера, превью
+
+**Markdown-редактор для `blog_posts.content`:**
+
+- Кандидаты: `@uiw/react-md-editor` (split-view) или TipTap
+- Превью с тем же рендером, что в мобилке (`react-native-markdown-display`)
+
+**Открытые вопросы (решить перед стартом):**
+
+1. Подход к видео: сырые файлы в Supabase Storage vs Mux/Cloudflare Stream (по CLAUDE.md планируется Mux)
+2. Markdown vs MDX для блога
+3. Soft delete vs hard delete для контента, на который есть ссылки из истории прогресса
+4. Версионирование (snapshot) exercise/workout, чтобы не ломать архивные `workout_sessions`
+
+**Definition of Done:**
+
+- 5 экранов-списков с фильтрами/поиском + 5 форм create/edit + delete-confirmation
+- Все uploads работают, файлы появляются в Supabase Storage и видны в мобилке
+- Markdown-пост создаётся через админку и корректно рендерится в `app/(tabs)/blog/[slug].tsx`
+- Tier-gating сохраняется (RLS не трогаем, только UI)
+
+### Итерация 6c — Админ-SPA: метрики + audit log
+
+**Цель:** наблюдаемость и аудит.
+
+**Dashboard метрики:**
+
+- DAU / MAU (graph за 30 дней)
+- MRR / ARR — текущий и тренд
+- Новые подписки по tier (basic/pro/pro_max) за период
+- Churn rate (cancelled + expired) за период
+- Распределение пользователей по tier (pie chart)
+- Топ-N самых популярных тренировок/программ за период
+
+**Источники данных:** агрегирующие SQL-views или materialized views (`mv_daily_active_users`, `mv_subscription_metrics`), обновляемые по cron.
+
+**UI просмотра `admin_audit_log`:**
+
+- Таблица всех записей: admin / action / target_user / created_at
+- Фильтр по action (`subscription_override` пока единственное, но дизайн на расширение)
+- Диалог с diff `before` / `after` (jsonb side-by-side)
+
+**Возможно (TBD):**
+
+- Экспорт метрик в CSV
+- Алерты на резкий churn
+
+### Итерация 7 — Push-уведомления (доделать Iter 4)
+
+**Что осталось от Iter 4:** UI и Edge Function для push отложены до EAS Dev Build.
+
+**Скоуп:**
+
+- `expo-notifications` интеграция + регистрация push-токенов в `profiles.push_token`
+- Edge Function `send-push` для отправки через Expo Push API
+- Триггеры:
+  - Новый blog post → broadcast всем
+  - Подписка истекает через 3 дня / 1 день → targeted
+  - Подписка успешно продлена / failed → targeted
+  - Готов новый индивидуальный план (Pro tier) → targeted
+- Админ-UI: push на сегменты (tier / последняя активность)
+- iOS APNS + Android FCM сертификаты
+
+**Зависимость:** EAS Dev Build должен быть собран и протестирован (Iter 3 закрыл подготовку, но физический билд ещё не делался).
+
+### Итерация 8 — Интеграция с фитнес-трекерами (TBD)
+
+Из CLAUDE.md «Scalability»:
+
+- Apple Health (HealthKit) — workouts, шаги, ЧСС
+- Google Fit / Health Connect — аналогично
+- Garmin Connect API — опционально
+
+**Подготовка уже сделана:** DB и API спроектированы расширяемо, без рефакторинга.
+
+### Идеи без номера итерации
+
+- Социальные функции: лента друзей, лайки на завершённые тренировки
+- AI-генератор индивидуальных программ (на основе целей + истории)
+- Apple/Google Sign-In (отложено с Iter 1 до dev build)
+- 2FA для админов (отложено с Iter 6a)
+- Bulk-actions + CSV-экспорт в админке
+- Управление ролями (грант/ревок `is_admin`) через UI вместо SQL
 
 ## Что реализовано (Итерация 6a)
 
