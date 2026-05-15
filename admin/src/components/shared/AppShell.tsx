@@ -1,12 +1,19 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Users, LogOut } from 'lucide-react';
+import { Activity, Apple, Calendar, Dumbbell, FileText, LogOut, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { signOutAdmin } from '@/features/auth/api/signOutAdmin';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import { cn } from '@/lib/utils';
 
-const NAV = [{ to: '/users', label: 'Пользователи', icon: Users }] as const;
+const NAV = [
+  { to: '/users', label: 'Пользователи', icon: Users },
+  { to: '/exercises', label: 'Упражнения', icon: Dumbbell },
+  { to: '/workouts', label: 'Тренировки', icon: Activity },
+  { to: '/programs', label: 'Программы', icon: Calendar },
+  { to: '/blog', label: 'Блог', icon: FileText },
+  { to: '/foods', label: 'Продукты', icon: Apple },
+] as const;
 
 export function AppShell() {
   const profile = useAuthStore((s) => s.profile);
