@@ -4,6 +4,7 @@ import { UsersListPage } from '@/features/users/pages/UsersListPage';
 import { FoodsListPage } from '@/features/foods/pages/FoodsListPage';
 import { BlogListPage } from '@/features/blog/pages/BlogListPage';
 import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage';
+import { WorkoutsListPage } from '@/features/workouts/pages/WorkoutsListPage';
 import { AppShell } from '@/components/shared/AppShell';
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
@@ -22,8 +23,7 @@ export const router = createBrowserRouter([
       { path: 'users', element: <UsersListPage /> },
       { path: 'users/:id', element: <UsersListPage /> },
       { path: 'exercises', element: <ExercisesListPage /> },
-      { path: 'workouts', element: <PlaceholderPage title="Тренировки" /> },
-      { path: 'workouts/:id', element: <PlaceholderPage title="Тренировки" /> },
+      { path: 'workouts', element: <WorkoutsListPage /> },
       { path: 'programs', element: <PlaceholderPage title="Программы" /> },
       { path: 'programs/:id', element: <PlaceholderPage title="Программы" /> },
       { path: 'blog', element: <BlogListPage /> },
