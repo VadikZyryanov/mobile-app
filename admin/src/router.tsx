@@ -5,8 +5,8 @@ import { FoodsListPage } from '@/features/foods/pages/FoodsListPage';
 import { BlogListPage } from '@/features/blog/pages/BlogListPage';
 import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage';
 import { WorkoutsListPage } from '@/features/workouts/pages/WorkoutsListPage';
+import { ProgramsListPage } from '@/features/programs/pages/ProgramsListPage';
 import { AppShell } from '@/components/shared/AppShell';
-import { PlaceholderPage } from '@/components/shared/PlaceholderPage';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -24,8 +24,7 @@ export const router = createBrowserRouter([
       { path: 'users/:id', element: <UsersListPage /> },
       { path: 'exercises', element: <ExercisesListPage /> },
       { path: 'workouts', element: <WorkoutsListPage /> },
-      { path: 'programs', element: <PlaceholderPage title="Программы" /> },
-      { path: 'programs/:id', element: <PlaceholderPage title="Программы" /> },
+      { path: 'programs', element: <ProgramsListPage /> },
       { path: 'blog', element: <BlogListPage /> },
       { path: 'foods', element: <FoodsListPage /> },
     ],
