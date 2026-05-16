@@ -546,6 +546,46 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_get_active_subs: {
+        Args: never;
+        Returns: {
+          count: number;
+          tier: string;
+        }[];
+      };
+      admin_get_content_stats: {
+        Args: never;
+        Returns: {
+          blog_posts_count: number;
+          exercises_count: number;
+          foods_count: number;
+          programs_count: number;
+          total_users: number;
+          workouts_count: number;
+        }[];
+      };
+      admin_get_registrations_daily: {
+        Args: { p_days?: number };
+        Returns: {
+          day: string;
+          new_users: number;
+        }[];
+      };
+      admin_get_subscription_events_daily: {
+        Args: { p_days?: number };
+        Returns: {
+          count: number;
+          day: string;
+          event_type: string;
+        }[];
+      };
+      admin_get_tier_distribution: {
+        Args: never;
+        Returns: {
+          count: number;
+          tier: string;
+        }[];
+      };
       admin_log_content_action: {
         Args: {
           p_action: string;
