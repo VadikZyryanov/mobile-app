@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { UsersListPage } from '@/features/users/pages/UsersListPage';
+import { FoodsListPage } from '@/features/foods/pages/FoodsListPage';
 import { AppShell } from '@/components/shared/AppShell';
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
@@ -26,8 +27,7 @@ export const router = createBrowserRouter([
       { path: 'programs/:id', element: <PlaceholderPage title="Программы" /> },
       { path: 'blog', element: <PlaceholderPage title="Блог" /> },
       { path: 'blog/:id', element: <PlaceholderPage title="Блог" /> },
-      { path: 'foods', element: <PlaceholderPage title="Продукты" /> },
-      { path: 'foods/:id', element: <PlaceholderPage title="Продукты" /> },
+      { path: 'foods', element: <FoodsListPage /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },
