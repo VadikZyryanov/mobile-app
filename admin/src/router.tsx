@@ -3,6 +3,7 @@ import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { UsersListPage } from '@/features/users/pages/UsersListPage';
 import { FoodsListPage } from '@/features/foods/pages/FoodsListPage';
 import { BlogListPage } from '@/features/blog/pages/BlogListPage';
+import { ExercisesListPage } from '@/features/exercises/pages/ExercisesListPage';
 import { AppShell } from '@/components/shared/AppShell';
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
@@ -20,8 +21,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/users" replace /> },
       { path: 'users', element: <UsersListPage /> },
       { path: 'users/:id', element: <UsersListPage /> },
-      { path: 'exercises', element: <PlaceholderPage title="Упражнения" /> },
-      { path: 'exercises/:id', element: <PlaceholderPage title="Упражнения" /> },
+      { path: 'exercises', element: <ExercisesListPage /> },
       { path: 'workouts', element: <PlaceholderPage title="Тренировки" /> },
       { path: 'workouts/:id', element: <PlaceholderPage title="Тренировки" /> },
       { path: 'programs', element: <PlaceholderPage title="Программы" /> },
