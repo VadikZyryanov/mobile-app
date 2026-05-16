@@ -60,3 +60,6 @@ supabase/.temp/
 # Admin SPA
 admin/node_modules/
 admin/dist/
+
+# Design drafts (Claude Design exports + screenshots, локальные, в репо не нужны)
+design-drafts/
