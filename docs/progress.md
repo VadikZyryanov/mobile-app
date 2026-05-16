@@ -10,13 +10,13 @@
 | 5   | Pro Max: питание               | ✅ Done        | 2026-05-11      |
 | 6a  | Админ-SPA: каркас + Users      | ✅ Done        | 2026-05-15      |
 | 6b  | Админ-SPA: CRUD контента       | ✅ Done        | 2026-05-16      |
-| 6c  | Админ-SPA: метрики + audit log | 📋 Planned     |                 |
+| 6c  | Админ-SPA: метрики + audit log | ✅ Done        | 2026-05-16      |
 | 7   | Push: дожать Iter 4 на EAS     | 📋 Planned     |                 |
 | 8   | Apple Health / Google Fit sync | 📋 Planned     |                 |
 
 ## Текущая итерация
 
-Все итерации до 6b завершены. Следующая: **6c** (метрики + audit log UI).
+Все итерации до 6c завершены. Следующая: **7** (Push-уведомления — дожать Iter 4 на EAS).
 
 ## План на будущие итерации
 
@@ -120,6 +120,58 @@
 - 2FA для админов (отложено с Iter 6a)
 - Bulk-actions + CSV-экспорт в админке
 - Управление ролями (грант/ревок `is_admin`) через UI вместо SQL
+
+## Что реализовано (Итерация 6c)
+
+**DB (миграция `20260516000001_admin_metrics.sql`, применена через Supabase MCP 2026-05-16):**
+
+- 5 SECURITY DEFINER RPC-функций для метрик:
+  - `admin_get_registrations_daily(p_days)` — ежедневные новые регистрации
+  - `admin_get_subscription_events_daily(p_days)` — ежедневные события подписок (new/cancel/expire)
+  - `admin_get_tier_distribution()` — распределение пользователей по тирам
+  - `admin_get_active_subs()` — активные подписки по тиру (для est. MRR)
+  - `admin_get_content_stats()` — счётчики контента + total_users
+- `src/lib/database.types.ts` перегенерирован
+
+**Новые зависимости:** `recharts` (charts в admin)
+
+**Метрики dashboard (`admin/src/features/metrics/`):**
+
+- `lib/mrrCalc.ts` — `calcMrr()` + `TIER_MONTHLY_PRICE_USD` (basic/pro/pro_max)
+- `api/getMetrics.ts` — 5 API-функций через `supabase.rpc()`
+- `hooks/useMetrics.ts` — 5 React Query хуков
+- `components/KpiCard.tsx` — карточка KPI (label + value + optional sub)
+- `components/RegistrationsChart.tsx` — LineChart (новые пользователи по дням)
+- `components/SubscriptionEventsChart.tsx` — BarChart (события подписок, stacked)
+- `components/TierPieChart.tsx` — PieChart (распределение по тирам)
+- `components/ContentStatsGrid.tsx` — сетка 6 KpiCard для контент-статистики
+- `pages/MetricsPage.tsx` — дашборд: period selector (7/30/90d), 4 KPI-карточки, 2 графика, pie, контент
+
+**Audit log viewer (`admin/src/features/audit/`):**
+
+- `api/listAuditLog.ts` — запрос `admin_audit_log` с join профилей, ilike-фильтр по action, пагинация
+- `hooks/useAuditLog.ts` — React Query хук
+- `components/AuditTable.tsx` — таблица (Дата/Действие/Сущность/Администратор/Пользователь/Diff)
+- `components/AuditDiffDialog.tsx` — диалог с before/after JSON side-by-side
+- `pages/AuditLogPage.tsx` — страница с фильтром по действию + пагинацией
+
+**Роутинг и навигация:**
+
+- `/metrics` и `/audit-log` роуты добавлены в `router.tsx`
+- AppShell NAV: +2 пункта (Метрики / Аудит)
+- Тяжёлые роуты (exercises, workouts, programs, blog, foods + новые) переведены на `React.lazy` + `Suspense`
+
+**Orphan storage cleanup:**
+
+- `deleteBlogPost` — удаляет `cover_path` из `blog-media` после hard delete
+- `deleteProgram` — удаляет `cover_path` из `program-covers` после hard delete
+
+**Финальные проверки (2026-05-16):**
+
+- Admin: `typecheck` ✅, `lint` ✅, `test` ✅ (128/128 — 99 → 128, +29 тестов), `build` ✅
+
+**План:** `docs/superpowers/plans/2026-05-16-iteration-6c-admin-metrics.md`
+**Коммиты:** `f16e77d` (DB), `6b37eaa` (scaffold), `b9c125e` (API+hooks), `901db6b` (dashboard UI), `6c2e5d9` (audit log), `bfbe1db` (storage cleanup)
 
 ## Что реализовано (Итерация 6b)
 
