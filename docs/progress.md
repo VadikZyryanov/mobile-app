@@ -9,14 +9,14 @@
 | 4   | Push + офлайн                  | 🔄 In Progress |                 |
 | 5   | Pro Max: питание               | ✅ Done        | 2026-05-11      |
 | 6a  | Админ-SPA: каркас + Users      | ✅ Done        | 2026-05-15      |
-| 6b  | Админ-SPA: CRUD контента       | 📋 Planned     |                 |
+| 6b  | Админ-SPA: CRUD контента       | ✅ Done        | 2026-05-16      |
 | 6c  | Админ-SPA: метрики + audit log | 📋 Planned     |                 |
 | 7   | Push: дожать Iter 4 на EAS     | 📋 Planned     |                 |
 | 8   | Apple Health / Google Fit sync | 📋 Planned     |                 |
 
 ## Текущая итерация
 
-Все итерации до 6a завершены. Следующая: **6b** (CRUD контента).
+Все итерации до 6b завершены. Следующая: **6c** (метрики + audit log UI).
 
 ## План на будущие итерации
 
@@ -120,6 +120,59 @@
 - 2FA для админов (отложено с Iter 6a)
 - Bulk-actions + CSV-экспорт в админке
 - Управление ролями (грант/ревок `is_admin`) через UI вместо SQL
+
+## Что реализовано (Итерация 6b)
+
+**DB (миграция `20260516000000_admin_content.sql`, применена через Supabase CLI 2026-05-16):**
+
+- Soft-delete колонки `deleted_at` на `exercises`, `workouts`, `foods` + partial indexes по `created_at desc`
+- Расширение `admin_audit_log`: `entity_type text`, `entity_id uuid` + индекс `(entity_type, entity_id, created_at desc)`
+- Обновлены RLS read-политики `exercises_read` / `workouts_read` / `foods_read` (soft-deleted скрыты от non-admin)
+- 3 SECURITY DEFINER RPC:
+  - `admin_log_content_action(action, entity_type, entity_id, before, after, note?)` — универсальный logger
+  - `admin_save_workout_with_exercises(p_workout, p_exercises)` — атомарный upsert workout + replace workout_exercises + audit
+  - `admin_save_program_with_workouts(p_program, p_schedule)` — атомарный upsert program + replace program_workouts + audit
+- `src/lib/database.types.ts` перегенерирован
+
+**Shared admin infrastructure (Phase 2):**
+
+- Зависимости: `@uiw/react-md-editor`, `react-markdown`, `remark-gfm`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- `admin/src/lib/storage.ts` — обёртки `uploadFile`/`deleteFile`/`getPublicUrl`/`getSignedUrl`/`generateStoragePath` для 4 buckets (exercise-media private, workout-covers/program-covers/blog-media public)
+- `admin/src/lib/audit.ts` — `logAdminAction()` → RPC
+- `ui/FileUpload` — type/size валидация, превью (public/signed), delete
+- `ui/MarkdownEditor` — обёртка `@uiw/react-md-editor` (split-view)
+- `ui/popover` — radix Popover wrapper
+- `shared/ConfirmDialog` — универсальный confirm для destructive actions
+- `shared/SoftDeleteToggle`, `DebouncedSearchInput`
+- `shared/ExercisePicker`, `WorkoutPicker` — Combobox-style Popover с debounced поиском
+- `types/content.ts` — типы 5 сущностей + русские лейблы (MUSCLE, WORKOUT_CATEGORY, TIER, DIFFICULTY)
+- `queryKeys.ts` — 5 новых секций с filter interfaces
+- `AppShell` NAV: 6 пунктов (Users + 5 новых); `router.tsx`: 5 новых роутов; CSS markdown-editor подключён в `main.tsx`
+
+**5 features (Phases 3-7):**
+
+- **`foods`** — slug, name, brand?, КБЖУ; FoodsTable + FoodFormDialog (rhf+zod) + delete/restore через soft-delete + ConfirmDialog
+- **`blog_posts`** — slug, title, excerpt, body (MarkdownEditor с Edit/Preview tabs через react-markdown+remark-gfm), cover_path (FileUpload blog-media), published_at (datetime-local); HARD delete; author_id берётся из `auth.uid()`
+- **`exercises`** — slug, name, description, primary_muscle (Select), secondary_muscles + equipment (chips fields), gif_path (FileUpload image/gif 10MB) + video_path (FileUpload video/mp4 50MB), min_tier; фильтры муcle/tier/удалённые; soft-delete
+- **`workouts`** + `workout_exercises` — атомарное сохранение через RPC; **WorkoutExercisesBuilder** с DnD (@dnd-kit/sortable): drag handle, inline sets/reps/rest/notes, ExercisePicker в каждой строке; FileUpload cover (workout-covers); soft-delete
+- **`programs`** + `program_workouts` — атомарное сохранение через RPC; **ProgramScheduleBuilder** — grid weeks × 7 дней с WorkoutPicker в каждой ячейке; confirm при сокращении weeks; HARD delete
+
+**Все CRUD пишут в `admin_audit_log`:** напрямую (foods/blog/exercises) через `logAdminAction()` или встроенно в RPC (workouts/programs).
+
+**Финальные проверки (2026-05-16):**
+
+- Admin: `typecheck` ✅, `lint` ✅, `test` ✅ (99/99 — 26 → 99, +73 теста), `build` ✅ (1.89MB bundle, code-split в 6c)
+- Mobile: `typecheck` ✅, `test` ✅ (230/230)
+
+**План:** `docs/superpowers/plans/2026-05-16-iteration-6b-admin-content.md`
+**Коммиты:** `73eaf23` (roadmap), `1b1df8f` (Phase 1 DB), `991f37b` (Phase 2 shared), `208c1ce` (Phase 3 foods), `4161cc6` (Phase 4 blog), `630b6ea` (Phase 5 exercises), `d540f7b` (Phase 6 workouts), `d2c016c` (Phase 7 programs)
+
+**Отложено в 6c:**
+
+- Code-split bundle (markdown editor + dnd-kit)
+- Cleanup orphan storage-файлов при замене cover/gif/video
+- Upload progress UI для крупных видео
+- Audit log viewer UI
 
 ## Что реализовано (Итерация 6a)
 
