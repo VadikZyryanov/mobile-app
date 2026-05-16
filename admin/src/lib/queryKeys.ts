@@ -1,3 +1,9 @@
+export interface AuditListFilters {
+  action?: string;
+  offset: number;
+  limit: number;
+}
+
 export interface UsersListFilters {
   tier?: string;
   search?: string;
@@ -78,5 +84,16 @@ export const qk = {
     all: ['foods'] as const,
     list: (f: FoodsListFilters) => ['foods', 'list', f] as const,
     detail: (id: string) => ['foods', 'detail', id] as const,
+  },
+  metrics: {
+    registrations: (days: number) => ['metrics', 'registrations', days] as const,
+    subscriptionEvents: (days: number) => ['metrics', 'subscriptionEvents', days] as const,
+    tierDistribution: ['metrics', 'tierDistribution'] as const,
+    activeSubs: ['metrics', 'activeSubs'] as const,
+    contentStats: ['metrics', 'contentStats'] as const,
+  },
+  audit: {
+    all: ['audit'] as const,
+    list: (filters: AuditListFilters) => ['audit', 'list', filters] as const,
   },
 } as const;

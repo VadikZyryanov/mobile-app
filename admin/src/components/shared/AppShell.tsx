@@ -1,5 +1,15 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Activity, Apple, Calendar, Dumbbell, FileText, LogOut, Users } from 'lucide-react';
+import {
+  Activity,
+  Apple,
+  BarChart2,
+  Calendar,
+  ClipboardList,
+  Dumbbell,
+  FileText,
+  LogOut,
+  Users,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { signOutAdmin } from '@/features/auth/api/signOutAdmin';
@@ -13,6 +23,8 @@ const NAV = [
   { to: '/programs', label: 'Программы', icon: Calendar },
   { to: '/blog', label: 'Блог', icon: FileText },
   { to: '/foods', label: 'Продукты', icon: Apple },
+  { to: '/metrics', label: 'Метрики', icon: BarChart2 },
+  { to: '/audit-log', label: 'Аудит', icon: ClipboardList },
 ] as const;
 
 export function AppShell() {
