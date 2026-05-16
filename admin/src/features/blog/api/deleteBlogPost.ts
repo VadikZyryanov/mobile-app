@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { logAdminAction } from '@/lib/audit';
+import { deleteFile } from '@/lib/storage';
 import type { BlogPost } from '@/types/content';
 
 export async function deleteBlogPost(id: string): Promise<void> {
@@ -14,4 +15,9 @@ export async function deleteBlogPost(id: string): Promise<void> {
   if (error) throw error;
 
   await logAdminAction('delete', 'blog_post', id, before as BlogPost, null);
+
+  const coverPath = (before as BlogPost)?.cover_path;
+  if (coverPath) {
+    await deleteFile('blog-media', coverPath).catch(() => undefined);
+  }
 }

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { logAdminAction } from '@/lib/audit';
+import { deleteFile } from '@/lib/storage';
 import type { Program } from '@/types/content';
 
 export async function deleteProgram(id: string): Promise<void> {
@@ -14,4 +15,9 @@ export async function deleteProgram(id: string): Promise<void> {
   if (error) throw error;
 
   await logAdminAction('delete', 'program', id, before as Program, null);
+
+  const coverPath = (before as Program)?.cover_path;
+  if (coverPath) {
+    await deleteFile('program-covers', coverPath).catch(() => undefined);
+  }
 }
