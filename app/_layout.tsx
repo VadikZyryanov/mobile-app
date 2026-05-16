@@ -1,3 +1,10 @@
+import {
+  useFonts,
+  Manrope_400Regular,
+  Manrope_700Bold,
+  Manrope_800ExtraBold,
+} from '@expo-google-fonts/manrope';
+import { JetBrainsMono_600SemiBold } from '@expo-google-fonts/jetbrains-mono';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -52,6 +59,13 @@ function AuthGate({ children }: { children: ReactNode }) {
 }
 
 export default function RootLayout() {
+  const [_fontsLoaded] = useFonts({
+    Manrope_400Regular,
+    Manrope_700Bold,
+    Manrope_800ExtraBold,
+    JetBrainsMono_600SemiBold,
+  });
+
   useEffect(() => {
     void mediaCache.init();
   }, []);
