@@ -7,13 +7,13 @@ const config: ExpoConfig = {
   scheme: 'fitnessapp',
   version: '1.0.0',
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: './assets/brand/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   splash: {
-    image: './assets/splash-icon.png',
-    resizeMode: 'contain',
-    backgroundColor: '#0A0A0A',
+    image: './assets/brand/splash.png',
+    resizeMode: 'cover',
+    backgroundColor: '#0A0910',
   },
   ios: {
     supportsTablet: true,
@@ -22,8 +22,8 @@ const config: ExpoConfig = {
   android: {
     package: 'com.fitnessapp.mobile',
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#0A0A0A',
+      foregroundImage: './assets/brand/adaptive-icon.png',
+      backgroundColor: '#0A0910',
     },
     edgeToEdgeEnabled: true,
   },

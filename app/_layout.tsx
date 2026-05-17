@@ -7,12 +7,14 @@ import {
 import { JetBrainsMono_600SemiBold } from '@expo-google-fonts/jetbrains-mono';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AnimatedSplash } from '@/components/brand';
 import { Screen } from '@/components/ui';
 import { OfflineBanner } from '@/components/shared';
 import { mediaCache } from '@/lib/mediaCache';
@@ -22,6 +24,9 @@ import { useAuthStore } from '@/store/auth.store';
 import { ThemeProvider, useTheme } from '@/theme';
 
 configureRevenueCat();
+void SplashScreen.preventAutoHideAsync();
+
+const SPLASH_HOLD_MS = 2200;
 
 function AuthGate({ children }: { children: ReactNode }) {
   const status = useAuthStore((s) => s.status);
@@ -59,16 +64,24 @@ function AuthGate({ children }: { children: ReactNode }) {
 }
 
 export default function RootLayout() {
-  const [_fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Manrope_400Regular,
     Manrope_700Bold,
     Manrope_800ExtraBold,
     JetBrainsMono_600SemiBold,
   });
+  const [splashVisible, setSplashVisible] = useState(true);
 
   useEffect(() => {
     void mediaCache.init();
   }, []);
+
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    SplashScreen.hideAsync().catch(() => {});
+    const timer = setTimeout(() => setSplashVisible(false), SPLASH_HOLD_MS);
+    return () => clearTimeout(timer);
+  }, [fontsLoaded]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -87,6 +100,7 @@ export default function RootLayout() {
                 />
               </Stack>
             </AuthGate>
+            <AnimatedSplash visible={splashVisible} />
           </ThemeProvider>
         </PersistQueryClientProvider>
       </SafeAreaProvider>
