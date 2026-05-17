@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -15,6 +16,8 @@ export type ScreenProps = ViewProps & {
   padded?: boolean;
   edges?: ReadonlyArray<Edge>;
   scrollViewProps?: ScrollViewProps;
+  header?: ReactNode;
+  footer?: ReactNode;
 };
 
 export function Screen({
@@ -24,6 +27,8 @@ export function Screen({
   children,
   style,
   scrollViewProps,
+  header,
+  footer,
   ...rest
 }: ScreenProps) {
   const theme = useTheme();
@@ -36,25 +41,25 @@ export function Screen({
     ? { flex: 1, paddingHorizontal: theme.spacing.base }
     : { flex: 1 };
 
-  if (scroll) {
-    return (
-      <SafeAreaView style={containerStyle} edges={edges as Edge[]}>
-        <ScrollView
-          contentContainerStyle={[styles.scrollContent, innerStyle, style]}
-          showsVerticalScrollIndicator={false}
-          {...scrollViewProps}
-        >
-          {children}
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
+  const content = scroll ? (
+    <ScrollView
+      contentContainerStyle={[styles.scrollContent, innerStyle, style]}
+      showsVerticalScrollIndicator={false}
+      {...scrollViewProps}
+    >
+      {children}
+    </ScrollView>
+  ) : (
+    <View style={[innerStyle, style]} {...rest}>
+      {children}
+    </View>
+  );
 
   return (
     <SafeAreaView style={containerStyle} edges={edges as Edge[]}>
-      <View style={[innerStyle, style]} {...rest}>
-        {children}
-      </View>
+      {header}
+      {content}
+      {footer}
     </SafeAreaView>
   );
 }
