@@ -11,6 +11,6 @@ describe('Text', () => {
     const { getByText } = renderWithTheme(<Text variant="hero">H</Text>);
     const styleArr = getByText('H').props.style;
     const flat = Array.isArray(styleArr) ? Object.assign({}, ...styleArr) : styleArr;
-    expect(flat.fontSize).toBe(32);
+    expect(flat.fontSize).toBe(34);
   });
 });

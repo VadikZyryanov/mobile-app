@@ -7,6 +7,8 @@ export {
   fontFamily,
   fontWeight,
   typography,
+  variantFamily,
+  type FontFamilyToken,
   type FontWeightToken,
   type TypographyVariant,
 } from './typography';

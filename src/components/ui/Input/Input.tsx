@@ -38,7 +38,7 @@ export function Input({ label, error, hint, onFocus, onBlur, ref, ...rest }: Inp
 
   const inputStyle: TextStyle = {
     color: theme.colors.text,
-    fontFamily: theme.fontFamily,
+    fontFamily: theme.fontFamily.body,
     ...theme.typography.bodyLg,
     padding: 0,
   };

@@ -14,7 +14,7 @@ export type TextProps = RNTextProps & {
 
 export function Text({
   variant = 'body',
-  weight = 'regular',
+  weight,
   color = 'text',
   align,
   style,
@@ -34,15 +34,13 @@ export function Text({
             ? theme.colors.danger
             : color === 'success'
               ? theme.colors.success
-              : theme.mode === 'dark'
-                ? theme.palette.black
-                : theme.palette.white;
+              : theme.colors.text;
 
   const composed: TextStyle = {
     ...sized,
     color: colorValue,
-    fontFamily: theme.fontFamily,
-    fontWeight: theme.fontWeight[weight],
+    fontFamily: theme.fontFamily[theme.variantFamily[variant]],
+    ...(weight ? { fontWeight: theme.fontWeight[weight] } : {}),
     textAlign: align,
   };
 

@@ -108,13 +108,7 @@ export function Button({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={
-            variant === 'primary'
-              ? theme.mode === 'dark'
-                ? theme.palette.black
-                : theme.palette.white
-              : theme.colors.accent
-          }
+          color={variant === 'primary' ? theme.colors.text : theme.colors.accent}
         />
       ) : (
         <View>

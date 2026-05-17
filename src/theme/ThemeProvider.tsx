@@ -6,7 +6,7 @@ import { darkColors, lightColors, palette, type SemanticColors } from './colors'
 import { radii } from './radii';
 import { shadows } from './shadows';
 import { spacing } from './spacing';
-import { fontFamily, fontWeight, typography } from './typography';
+import { fontFamily, fontWeight, typography, variantFamily } from './typography';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -19,6 +19,7 @@ export type Theme = {
   typography: typeof typography;
   fontFamily: typeof fontFamily;
   fontWeight: typeof fontWeight;
+  variantFamily: typeof variantFamily;
   shadows: typeof shadows;
   blur: typeof blur;
 };
@@ -32,6 +33,7 @@ const buildTheme = (mode: ThemeMode): Theme => ({
   typography,
   fontFamily,
   fontWeight,
+  variantFamily,
   shadows,
   blur,
 });

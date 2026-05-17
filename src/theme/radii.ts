@@ -4,6 +4,7 @@ export const radii = {
   lg: 16,
   xl: 20,
   '2xl': 24,
+  pill: 999,
   full: 9999,
 } as const;
 
