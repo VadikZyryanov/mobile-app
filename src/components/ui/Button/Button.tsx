@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -8,11 +9,12 @@ import {
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { useTheme } from '@/theme';
+import { palette, useTheme } from '@/theme';
 import { Text, type TextColor } from '../Text';
+import type { TypographyVariant } from '@/theme';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'cream' | 'text';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'children'> & {
   variant?: ButtonVariant;
@@ -20,17 +22,20 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'children'> & {
   loading?: boolean;
   label: string;
   fullWidth?: boolean;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const sizeMap: Record<
   ButtonSize,
-  { paddingV: number; paddingH: number; textVariant: 'body' | 'bodyLg' }
+  { paddingV: number; paddingH: number; textVariant: TypographyVariant; gap: number }
 > = {
-  sm: { paddingV: 8, paddingH: 14, textVariant: 'body' },
-  md: { paddingV: 12, paddingH: 18, textVariant: 'bodyLg' },
-  lg: { paddingV: 16, paddingH: 24, textVariant: 'bodyLg' },
+  xs: { paddingV: 6, paddingH: 12, textVariant: 'small', gap: 6 },
+  sm: { paddingV: 8, paddingH: 14, textVariant: 'body', gap: 8 },
+  md: { paddingV: 12, paddingH: 18, textVariant: 'bodyLg', gap: 8 },
+  lg: { paddingV: 16, paddingH: 24, textVariant: 'bodyLg', gap: 10 },
 };
 
 export function Button({
@@ -40,6 +45,8 @@ export function Button({
   disabled = false,
   label,
   fullWidth = false,
+  iconLeft,
+  iconRight,
   onPressIn,
   onPressOut,
   ...rest
@@ -70,11 +77,40 @@ export function Button({
           backgroundColor: 'transparent',
           borderColor: 'transparent',
         };
+      case 'cream':
+        return {
+          backgroundColor: palette.cream,
+          borderColor: palette.cream,
+        };
+      case 'text':
+        return {
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+        };
     }
   })();
 
-  const labelColor: TextColor =
-    variant === 'primary' ? 'inverse' : variant === 'ghost' ? 'accent' : 'text';
+  const labelColor: TextColor = (() => {
+    switch (variant) {
+      case 'primary':
+        return 'onAccent';
+      case 'ghost':
+      case 'text':
+        return 'accent';
+      case 'cream':
+        return 'ink';
+      case 'secondary':
+      default:
+        return 'text';
+    }
+  })();
+
+  const spinnerColor =
+    variant === 'primary'
+      ? theme.colors.onAccent
+      : variant === 'cream'
+        ? palette.ink
+        : theme.colors.accent;
 
   const containerStyle: ViewStyle = {
     paddingVertical: sizeMap[size].paddingV,
@@ -84,6 +120,7 @@ export function Button({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    gap: sizeMap[size].gap,
     opacity: isDisabled ? 0.5 : 1,
     alignSelf: fullWidth ? 'stretch' : 'flex-start',
     ...variantStyles,
@@ -106,16 +143,15 @@ export function Button({
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? theme.colors.text : theme.colors.accent}
-        />
+        <ActivityIndicator size="small" color={spinnerColor} />
       ) : (
-        <View>
+        <>
+          {iconLeft ? <View>{iconLeft}</View> : null}
           <Text variant={sizeMap[size].textVariant} weight="semibold" color={labelColor}>
             {label}
           </Text>
-        </View>
+          {iconRight ? <View>{iconRight}</View> : null}
+        </>
       )}
     </AnimatedPressable>
   );

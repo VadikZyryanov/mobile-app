@@ -1,4 +1,4 @@
-import { useState, type Ref } from 'react';
+import { useState, type ReactNode, type Ref } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -16,27 +16,54 @@ export type InputProps = Omit<TextInputProps, 'style'> & {
   error?: string;
   hint?: string;
   ref?: Ref<TextInput>;
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
 };
 
-export function Input({ label, error, hint, onFocus, onBlur, ref, ...rest }: InputProps) {
+export function Input({
+  label,
+  error,
+  hint,
+  onFocus,
+  onBlur,
+  ref,
+  leadingIcon,
+  trailingIcon,
+  ...rest
+}: InputProps) {
   const theme = useTheme();
   const [focused, setFocused] = useState(false);
   const hasError = Boolean(error);
 
+  const borderColor = hasError
+    ? theme.colors.danger
+    : focused
+      ? theme.colors.accentSoft
+      : theme.colors.divider;
+
   const containerStyle: ViewStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
     borderRadius: theme.radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: theme.spacing.md,
-    borderColor: hasError
-      ? theme.colors.danger
-      : focused
-        ? theme.colors.accent
-        : theme.colors.divider,
+    borderColor,
     backgroundColor: focused ? theme.colors.glassBg : theme.colors.bgElevated,
+    ...(focused && !hasError
+      ? {
+          shadowColor: theme.colors.accent,
+          shadowOpacity: 0.35,
+          shadowRadius: 4,
+          shadowOffset: { width: 0, height: 0 },
+          elevation: 2,
+        }
+      : null),
   };
 
   const inputStyle: TextStyle = {
+    flex: 1,
     color: theme.colors.text,
     fontFamily: theme.fontFamily.body,
     ...theme.typography.bodyLg,
@@ -61,6 +88,7 @@ export function Input({ label, error, hint, onFocus, onBlur, ref, ...rest }: Inp
         </Text>
       ) : null}
       <View style={containerStyle}>
+        {leadingIcon ? <View>{leadingIcon}</View> : null}
         <TextInput
           ref={ref}
           placeholderTextColor={theme.colors.textMuted}
@@ -69,6 +97,7 @@ export function Input({ label, error, hint, onFocus, onBlur, ref, ...rest }: Inp
           style={inputStyle}
           {...rest}
         />
+        {trailingIcon ? <View>{trailingIcon}</View> : null}
       </View>
       {error ? (
         <Text variant="caption" color="danger">

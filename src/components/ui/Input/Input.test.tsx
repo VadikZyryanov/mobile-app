@@ -1,4 +1,5 @@
 import { fireEvent } from '@testing-library/react-native';
+import { Text as RNText } from 'react-native';
 
 import { renderWithTheme } from '@/test-utils/render';
 import { Input } from './Input';
@@ -28,5 +29,17 @@ describe('Input', () => {
     );
     fireEvent.changeText(getByPlaceholderText('type'), 'hello');
     expect(onChangeText).toHaveBeenCalledWith('hello');
+  });
+
+  it('рендерит leadingIcon и trailingIcon', () => {
+    const { getByText } = renderWithTheme(
+      <Input
+        placeholder="search"
+        leadingIcon={<RNText>L</RNText>}
+        trailingIcon={<RNText>R</RNText>}
+      />,
+    );
+    expect(getByText('L')).toBeTruthy();
+    expect(getByText('R')).toBeTruthy();
   });
 });

@@ -21,4 +21,13 @@ describe('Card', () => {
     );
     expect(getByText('Glassed')).toBeTruthy();
   });
+
+  it('рендерит детей в pink-варианте', () => {
+    const { getByText } = renderWithTheme(
+      <Card variant="pink">
+        <Text>Pinked</Text>
+      </Card>,
+    );
+    expect(getByText('Pinked')).toBeTruthy();
+  });
 });

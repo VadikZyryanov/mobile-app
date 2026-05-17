@@ -32,6 +32,8 @@ export type SemanticColors = {
   text: string;
   textMuted: string;
   accent: string;
+  accentSoft: string;
+  onAccent: string;
   divider: string;
   danger: string;
   success: string;
@@ -46,6 +48,8 @@ export const darkColors: SemanticColors = {
   text: palette.cream,
   textMuted: palette.beigeSoft,
   accent: palette.pink,
+  accentSoft: palette.pinkSoft,
+  onAccent: palette.cream,
   divider: 'rgba(232,220,196,0.07)',
   danger: palette.danger,
   success: palette.success,

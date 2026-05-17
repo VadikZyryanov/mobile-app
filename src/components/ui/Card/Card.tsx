@@ -3,13 +3,16 @@ import { StyleSheet, View, type ViewProps, type ViewStyle } from 'react-native';
 
 import { useTheme, type RadiusToken } from '@/theme';
 
-export type CardVariant = 'base' | 'glass';
+export type CardVariant = 'base' | 'glass' | 'pink';
 
 export type CardProps = ViewProps & {
   variant?: CardVariant;
   radius?: RadiusToken;
   padded?: boolean;
 };
+
+const PINK_TINT_BG = 'rgba(255,45,135,0.08)';
+const PINK_TINT_BORDER = 'rgba(255,45,135,0.25)';
 
 export function Card({
   variant = 'base',
@@ -47,6 +50,25 @@ export function Card({
           style={StyleSheet.absoluteFill}
         />
         <View style={{ padding }}>{children}</View>
+      </View>
+    );
+  }
+
+  if (variant === 'pink') {
+    return (
+      <View
+        style={[
+          wrapperStyle,
+          {
+            backgroundColor: PINK_TINT_BG,
+            borderColor: PINK_TINT_BORDER,
+            padding,
+          },
+          style,
+        ]}
+        {...rest}
+      >
+        {children}
       </View>
     );
   }
