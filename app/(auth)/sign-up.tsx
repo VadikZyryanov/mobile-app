@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { EnvelopeIcon, LockIcon, TopBar, UserIcon } from '@/components/shared';
 import { Button, Input, Screen, Text } from '@/components/ui';
 import { signUpWithEmail } from '@/features/auth/api/signUpWithEmail';
 import { useTheme } from '@/theme';
@@ -23,10 +24,10 @@ export default function SignUpScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
+    <Screen scroll header={<TopBar leading="back" onLeadingPress={() => router.back()} />}>
+      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing.md }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <Text variant="hero" weight="bold">
+          <Text variant="display" weight="bold">
             Регистрация
           </Text>
           <Text variant="body" color="textMuted">
@@ -41,6 +42,7 @@ export default function SignUpScreen() {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
+          leadingIcon={<EnvelopeIcon color={theme.colors.textMuted} />}
         />
         <Input
           label="Пароль"
@@ -48,12 +50,14 @@ export default function SignUpScreen() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          leadingIcon={<LockIcon color={theme.colors.textMuted} />}
         />
         <Input
           label="Имя (необязательно)"
           placeholder="Как тебя называть?"
           value={name}
           onChangeText={setName}
+          leadingIcon={<UserIcon color={theme.colors.textMuted} />}
         />
 
         {error ? (
@@ -63,7 +67,6 @@ export default function SignUpScreen() {
         ) : null}
 
         <Button label="Создать аккаунт" fullWidth loading={loading} onPress={() => void submit()} />
-        <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
   );

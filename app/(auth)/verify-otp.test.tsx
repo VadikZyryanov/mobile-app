@@ -16,8 +16,8 @@ describe('VerifyOtpScreen', () => {
 
   it('вызывает verifyPhoneOtp с phone и кодом', async () => {
     const spy = jest.spyOn(verifyModule, 'verifyPhoneOtp').mockResolvedValueOnce({ ok: true });
-    const { getByText, getByPlaceholderText } = renderWithTheme(<VerifyOtpScreen />);
-    fireEvent.changeText(getByPlaceholderText('123456'), '123456');
+    const { getByText, getByLabelText } = renderWithTheme(<VerifyOtpScreen />);
+    fireEvent.changeText(getByLabelText('OTP-input'), '123456');
     fireEvent.press(getByText('Подтвердить'));
     await waitFor(() => expect(spy).toHaveBeenCalledWith('+79991234567', '123456'));
   });

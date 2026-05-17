@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { EnvelopeIcon, TopBar } from '@/components/shared';
 import { Button, Input, Screen, Text } from '@/components/ui';
 import { resetPassword } from '@/features/auth/api/resetPassword';
 import { useTheme } from '@/theme';
@@ -24,7 +25,7 @@ export default function ForgotPasswordScreen() {
 
   if (sent) {
     return (
-      <Screen>
+      <Screen header={<TopBar leading="close" onLeadingPress={() => router.back()} />}>
         <View
           style={{
             flex: 1,
@@ -33,7 +34,7 @@ export default function ForgotPasswordScreen() {
             padding: theme.spacing.lg,
           }}
         >
-          <Text variant="hero" weight="bold" align="center">
+          <Text variant="display" weight="bold" align="center">
             Письмо отправлено
           </Text>
           <Text variant="bodyLg" color="textMuted" align="center">
@@ -46,10 +47,10 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <Screen scroll>
-      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
+    <Screen scroll header={<TopBar leading="back" onLeadingPress={() => router.back()} />}>
+      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing.md }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <Text variant="hero" weight="bold">
+          <Text variant="display" weight="bold">
             Сброс пароля
           </Text>
           <Text variant="body" color="textMuted">
@@ -64,6 +65,7 @@ export default function ForgotPasswordScreen() {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
+          leadingIcon={<EnvelopeIcon color={theme.colors.textMuted} />}
         />
 
         {error ? (
@@ -78,7 +80,6 @@ export default function ForgotPasswordScreen() {
           loading={loading}
           onPress={() => void submit()}
         />
-        <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
   );

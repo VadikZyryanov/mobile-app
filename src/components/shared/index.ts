@@ -27,3 +27,5 @@ export { StickyCTA } from './StickyCTA';
 export type { StickyCTAProps } from './StickyCTA';
 export { PageHeader } from './PageHeader';
 export type { PageHeaderProps } from './PageHeader';
+export { EnvelopeIcon, LockIcon, PhoneIcon, UserIcon } from './icons';
+export type { IconProps } from './icons';

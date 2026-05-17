@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { LockIcon, TopBar } from '@/components/shared';
 import { Button, Input, Screen, Text } from '@/components/ui';
 import { updatePassword } from '@/features/auth/api/updatePassword';
 import { useTheme } from '@/theme';
@@ -30,10 +31,10 @@ export default function ResetPasswordScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
+    <Screen scroll header={<TopBar leading="back" onLeadingPress={() => router.back()} />}>
+      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing.md }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <Text variant="hero" weight="bold">
+          <Text variant="display" weight="bold">
             Новый пароль
           </Text>
           <Text variant="body" color="textMuted">
@@ -47,6 +48,7 @@ export default function ResetPasswordScreen() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          leadingIcon={<LockIcon color={theme.colors.textMuted} />}
         />
         <Input
           label="Подтверждение"
@@ -54,6 +56,7 @@ export default function ResetPasswordScreen() {
           value={confirm}
           onChangeText={setConfirm}
           secureTextEntry
+          leadingIcon={<LockIcon color={theme.colors.textMuted} />}
         />
 
         {error ? (

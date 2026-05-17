@@ -4,35 +4,34 @@ import {
   Dimensions,
   FlatList,
   Pressable,
+  StyleSheet,
   View,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
 
+import { AppIcon } from '@/components/brand';
 import { Button, Card, Screen, Text } from '@/components/ui';
 import { storage, StorageKeys } from '@/lib/storage';
 import { useTheme } from '@/theme';
 
-type Slide = { key: string; title: string; body: string; emoji: string };
+type Slide = { key: string; title: string; body: string };
 
 const SLIDES: readonly Slide[] = [
   {
     key: '1',
     title: 'Тренировки на каждый день',
     body: 'Готовые программы и отдельные тренировки для дома и зала.',
-    emoji: '💪',
   },
   {
     key: '2',
     title: 'Блог тренера',
     body: 'Разборы техники, советы по восстановлению, новости в твоём фиде.',
-    emoji: '📝',
   },
   {
     key: '3',
     title: 'Твой прогресс остаётся с тобой',
     body: 'История тренировок, любимые программы, индивидуальный план — всё синхронизируется.',
-    emoji: '📈',
   },
 ];
 
@@ -92,11 +91,11 @@ export default function WelcomeScreen() {
             }}
           >
             <Card variant="glass">
-              <View style={{ alignItems: 'center', paddingVertical: theme.spacing['2xl'] }}>
-                <Text variant="heroLg">{item.emoji}</Text>
+              <View style={[styles.heroSlot, { paddingVertical: theme.spacing['2xl'] }]}>
+                <AppIcon size={140} radius={36} />
               </View>
             </Card>
-            <Text variant="hero" weight="bold" align="center">
+            <Text variant="display" weight="bold" align="center">
               {item.title}
             </Text>
             <Text variant="bodyLg" color="textMuted" align="center">
@@ -118,7 +117,7 @@ export default function WelcomeScreen() {
           <View
             key={s.key}
             style={{
-              width: 8,
+              width: i === index ? 20 : 8,
               height: 8,
               borderRadius: 4,
               backgroundColor: i === index ? theme.colors.accent : theme.colors.divider,
@@ -137,3 +136,9 @@ export default function WelcomeScreen() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  heroSlot: {
+    alignItems: 'center',
+  },
+});

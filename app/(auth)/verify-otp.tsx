@@ -2,12 +2,14 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
-import { Button, Input, Screen, Text } from '@/components/ui';
+import { TopBar } from '@/components/shared';
+import { Button, OtpInput, Screen, Text } from '@/components/ui';
 import { signInWithPhone } from '@/features/auth/api/signInWithPhone';
 import { verifyPhoneOtp } from '@/features/auth/api/verifyPhoneOtp';
 import { useTheme } from '@/theme';
 
 const RESEND_COOLDOWN = 60;
+const OTP_LENGTH = 6;
 
 export default function VerifyOtpScreen() {
   const theme = useTheme();
@@ -44,10 +46,10 @@ export default function VerifyOtpScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
+    <Screen scroll header={<TopBar leading="back" onLeadingPress={() => router.back()} />}>
+      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing.md }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <Text variant="hero" weight="bold">
+          <Text variant="display" weight="bold">
             Введи код
           </Text>
           <Text variant="body" color="textMuted">
@@ -55,17 +57,12 @@ export default function VerifyOtpScreen() {
           </Text>
         </View>
 
-        <Input
-          label="Код"
-          placeholder="123456"
-          value={code}
-          onChangeText={setCode}
-          keyboardType="number-pad"
-          maxLength={6}
-        />
+        <View style={{ alignItems: 'center', paddingVertical: theme.spacing.md }}>
+          <OtpInput value={code} onChange={setCode} length={OTP_LENGTH} autoFocus />
+        </View>
 
         {error ? (
-          <Text variant="body" color="danger">
+          <Text variant="body" color="danger" align="center">
             {error}
           </Text>
         ) : null}
@@ -73,12 +70,11 @@ export default function VerifyOtpScreen() {
         <Button label="Подтвердить" fullWidth loading={loading} onPress={() => void submit()} />
         <Button
           label={cooldown > 0 ? `Отправить ещё раз (${cooldown}с)` : 'Отправить ещё раз'}
-          variant="ghost"
+          variant="text"
           fullWidth
           disabled={cooldown > 0}
           onPress={() => void resend()}
         />
-        <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
   );

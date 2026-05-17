@@ -2,6 +2,7 @@ import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { EnvelopeIcon, LockIcon, PhoneIcon, TopBar } from '@/components/shared';
 import { Button, Input, Screen, Segmented, Text } from '@/components/ui';
 import { signInWithEmail } from '@/features/auth/api/signInWithEmail';
 import { signInWithPhone } from '@/features/auth/api/signInWithPhone';
@@ -43,10 +44,10 @@ export default function SignInScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing['2xl'] }}>
+    <Screen scroll header={<TopBar leading="back" onLeadingPress={() => router.back()} />}>
+      <View style={{ gap: theme.spacing.lg, paddingTop: theme.spacing.md }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <Text variant="hero" weight="bold">
+          <Text variant="display" weight="bold">
             Вход
           </Text>
           <Text variant="body" color="textMuted">
@@ -72,6 +73,7 @@ export default function SignInScreen() {
               onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
+              leadingIcon={<EnvelopeIcon color={theme.colors.textMuted} />}
             />
             <Input
               label="Пароль"
@@ -79,6 +81,7 @@ export default function SignInScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              leadingIcon={<LockIcon color={theme.colors.textMuted} />}
             />
             {error ? (
               <Text variant="body" color="danger">
@@ -88,7 +91,7 @@ export default function SignInScreen() {
             <Button label="Войти" fullWidth loading={loading} onPress={() => void submitEmail()} />
             <Button
               label="Забыли пароль?"
-              variant="ghost"
+              variant="text"
               fullWidth
               onPress={() => router.push('/(auth)/forgot-password' as Href)}
             />
@@ -102,6 +105,7 @@ export default function SignInScreen() {
               onChangeText={setPhone}
               autoCapitalize="none"
               keyboardType="phone-pad"
+              leadingIcon={<PhoneIcon color={theme.colors.textMuted} />}
             />
             {error ? (
               <Text variant="body" color="danger">
@@ -116,8 +120,6 @@ export default function SignInScreen() {
             />
           </>
         )}
-
-        <Button label="Назад" variant="ghost" fullWidth onPress={() => router.back()} />
       </View>
     </Screen>
   );
